@@ -1,0 +1,22 @@
+{
+    "name": "octo/forms",
+    "description": "Forms module for Octo CMS",
+    "minimum-stability": "dev",
+    "type"             : "library",
+    "keywords"         : ["php", "cms", "octo", "content management", "content management system", "forms"],
+    "homepage"         : "http://www.octocms.net/",
+    "license"          : "BSD-2-Clause",
+
+    "authors": [
+        {
+            "name": "Dan Cryer",
+            "email": "dan@block8.co.uk",
+            "homepage": "https://www.block8.co.uk",
+            "role": "Developer"
+        }
+    ],
+
+    "autoload": {
+        "psr-4": { "Octo\\Forms\\": "" }
+    }
+}
