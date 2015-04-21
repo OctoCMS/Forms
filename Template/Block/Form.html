@@ -1,16 +1,12 @@
 
-{if thankyou}
-    <div class="alert alert-success">
-        {@thankyou}
-    </div>
-{/if}
+<div if="thankyou" class="alert alert-success">
+    {@thankyou}
+</div>
 
-{if error}
-<div class="alert alert-danger">
+<div if="error" class="alert alert-danger">
     {@error}
 </div>
-{/if}
 
-{if form}
+<div if="form">
     {@form}
-{/if}
+</div>

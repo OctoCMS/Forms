@@ -1,9 +1,7 @@
 <section class="form-group">
-    {if label}
-    <label for="{@id}">{@label}</label>
-    {/if}
+    <label if="label" for="{@id}">{@label}</label>
 
-    {for children}
+    <span repeat="children">
         {@item}
-    {/for}
+    </span>
 </section>

@@ -1,9 +1,7 @@
 <section class="address-field">
-    {if label}
-    <label for="{@id}">{@label}</label>
-    {/if}
+    <label if="label" for="{@id}">{@label}</label>
 
-    {for children}
-        {@item}
-    {/for}
+    <div repeat="children">
+        {@value}
+    </div>
 </section>

@@ -1,8 +1,8 @@
-<section class="form-group {@ccss} {if error}error{/if}">
-    {if label}<label class="">{@label}</label>{/if}
-    <input id="{@id}" type="{@type}" class="form-control {@css} {if error}invalid{/if}" name="{@name}" value="{@value}"{if pattern} pattern="{@pattern}"{/if}{if required} required{/if}>
+<section .class="(error) form-group error ? form-group">
+<label if="label" class="">{@label}</label>
 
-	{if error}
-    <em for="{@name}" class="invalid">{@error}</em>
-	{/if}
+<input if="pattern == ''" id="{@id}" type="{@type}" class="form-control {@css}" name="{@name}" value="{@value}" .required="required">
+<input if="pattern" id="{@id}" type="{@type}" class="form-control {@css}" name="{@name}" value="{@value}" pattern="{@pattern}" .required="required">
+
+<em if="error" for="{@name}" class="invalid">{@error}</em>
 </section>

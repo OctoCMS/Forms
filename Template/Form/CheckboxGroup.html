@@ -1,11 +1,9 @@
 <div class="form-group {@css}">
-	{if label}
-		<label>{@label}</label>
-	{/if}
+		<label if="label">{@label}</label>
 
 	<div class="controls">
-        {for children}
+        <div repeat="children">
             {@value}
-        {/for}
+        </div>
 	</div>
 </div>

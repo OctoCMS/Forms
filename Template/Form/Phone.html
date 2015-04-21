@@ -1,14 +1,13 @@
-<div class="form-group {@ccss} {if error}error{/if}">
-    {if label}
-    <label for="{@id}">{@label}</label>
-    {/if}
+<div .class="(error) form-group error ? form-group">
+    <label if="label" for="{@id}">{@label}</label>
 
     <div class="controls">
-        <input id="{@id}" type="{@type}" class="form-control {@css}"
-               name="{@name}"{if value} value="{@value}"{/if}{if pattern} pattern="{@pattern}"{/if}{if required} required{/if}>
+        <input if="pattern" id="{@id}" type="{@type}" class="form-control {@css}"
+               name="{@name}" value="{@value}" pattern="{@pattern}" .required="required">
 
-        {if error}
-        <span class="help-block">{@error}</span>
-        {/if}
+        <input if="pattern == ''" id="{@id}" type="{@type}" class="form-control {@css}"
+               name="{@name}" value="{@value}" .required="required">
+
+        <span if="error" class="help-block">{@error}</span>
     </div>
 </div>

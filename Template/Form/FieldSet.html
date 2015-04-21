@@ -1,9 +1,7 @@
 <fieldset>
-	{if label}
-	<legend>{@label}</legend>
-	{/if}
+	<legend if="label">{@label}</legend>
 
-    {for children}
+    <div repeat="children">
         {@value}
-    {/for}
+    </div>
 </fieldset>

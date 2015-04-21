@@ -4,8 +4,7 @@
     </p>
     <table width="100%" style="background: #fff; border-radius: 7px">
 
-        {if submission.Contact.first_name}
-        <tr>
+        <tr if="submission.Contact.first_name">
             <td style="width: 175px; font-family: Tahoma, arial, sans-serif; background: #EDF9FF; padding: 5px; font-weight: bold">
                 Name
             </td>
@@ -13,10 +12,8 @@
                 {@submission.Contact.title} {@submission.Contact.first_name} {@submission.Contact.last_name}
             </td>
         </tr>
-        {/if}
 
-        {if submission.Contact.email}
-        <tr>
+        <tr if="submission.Contact.email">
             <td style="width: 175px; font-family: Tahoma, arial, sans-serif; background: #EDF9FF; padding: 5px; font-weight: bold">
                 Email address
             </td>
@@ -24,10 +21,8 @@
                 {@submission.Contact.email}
             </td>
         </tr>
-        {/if}
 
-        {if submission.Contact.phone}
-        <tr>
+        <tr if="submission.Contact.phone">
             <td style="width: 175px; font-family: Tahoma, arial, sans-serif; background: #EDF9FF; padding: 5px; font-weight: bold">
                 Phone
             </td>
@@ -35,18 +30,15 @@
                 {@submission.Contact.phone}
             </td>
         </tr>
-        {/if}
 
-        {if submission.message}
-        <tr>
+        <tr if="submission.Contact.message">
             <td colspan="2" style="font-family: Tahoma, arial, sans-serif; padding: 5px">
                 <div style="margin-bottom: 10px"><strong>Message</strong></div>
                 {@submission.message}
             </td>
         </tr>
-        {/if}
     </table>
 
     <br><br><br>
-    View this message online: {@config.site.url}/{@adminUri}/form/submission/{@submission.id}
+    View this message online: {@config.site.url}/{@config.site.admin_uri}/form/submission/{@submission.id}
 </div>
