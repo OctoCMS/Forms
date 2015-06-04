@@ -106,7 +106,7 @@ trait SubmissionStoreBase
      * @param array $options Limits, offsets, etc.
      * @param string $useConnection Connection type to use.
      * @throws StoreException
-     * @return Submission[]
+     * @return SubmissionCollection
      */
     public function getByFormId($value, $options = [], $useConnection = 'read')
     {
@@ -160,7 +160,7 @@ trait SubmissionStoreBase
      * @param array $options Limits, offsets, etc.
      * @param string $useConnection Connection type to use.
      * @throws StoreException
-     * @return Submission[]
+     * @return SubmissionCollection
      */
     public function getByContactId($value, $options = [], $useConnection = 'read')
     {
