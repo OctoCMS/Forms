@@ -177,7 +177,7 @@ class Form extends Block
             $submission->setForm($formModel);
             $submission->setCreatedDate(new \DateTime());
             $submission->setContact($contact);
-            $submission->setMessage($this->request->getParam('message', null));
+            $submission->setMessage(nl2br($this->request->getParam('message', null)));
 
             $extra = [];
             foreach ($this->request->getParams() as $key => $value) {
@@ -250,7 +250,9 @@ class Form extends Block
         $message         = Template::load('Emails/FormSubmission');
         $message->form   = $form;
         $message->submission = $submission;
-        $mail->Body = $message->render();
+        $body = $message->render();
+
+        $mail->Body = $body;
         $mail->send();
     }
 }

@@ -1,8 +1,15 @@
-<div style="background: #246; padding: 20px">
-    <p style="font-family: Tahoma, arial, sans-serif; color: #fff; margin-bottom: 10px">
-        A visitor has filled in your <strong>{@form.title}</strong> form.
+<div style="padding: 20px">
+    <h3 style="font-family: Tahoma, arial, sans-serif; color: #246; margin-bottom: 10px">
+        A visitor has filled in your "{@form.title}" form.
+    </h3>
+
+    <p style="font-family: Tahoma, arial, sans-serif; color: #666; margin-bottom: 10px">
+    View this message online: {@config.site.url}/{@config.site.admin_uri}/form/submission/{@submission.id}
     </p>
-    <table width="100%" style="background: #fff; border-radius: 7px">
+
+    <br>
+
+    <table width="100%" style="background: #fff; border-radius: 7px; border: 1px solid #369">
 
         <tr if="submission.Contact.first_name">
             <td style="width: 175px; font-family: Tahoma, arial, sans-serif; background: #EDF9FF; padding: 5px; font-weight: bold">
@@ -31,14 +38,14 @@
             </td>
         </tr>
 
-        <tr if="submission.Contact.message">
-            <td colspan="2" style="font-family: Tahoma, arial, sans-serif; padding: 5px">
-                <div style="margin-bottom: 10px"><strong>Message</strong></div>
+        <tr if="submission.message">
+            <td style="vertical-align: top; width: 175px; font-family: Tahoma, arial, sans-serif; background: #EDF9FF; padding: 5px; font-weight: bold">
+                Message
+            </td>
+            <td style="vertical-align: top; font-family: Tahoma, arial, sans-serif; padding: 5px">
                 {@submission.message}
             </td>
         </tr>
     </table>
 
-    <br><br><br>
-    View this message online: {@config.site.url}/{@config.site.admin_uri}/form/submission/{@submission.id}
 </div>
