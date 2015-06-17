@@ -158,7 +158,8 @@ class Form extends Block
         }
 
         try {
-            $contactDetails = $this->getContactDetails();
+            $values = $form->getValues();
+            $contactDetails = $this->getContactDetails($values);
             $contact = $this->contactStore->findContact($contactDetails);
 
             if (is_null($contact)) {
@@ -177,12 +178,21 @@ class Form extends Block
             $submission->setForm($formModel);
             $submission->setCreatedDate(new \DateTime());
             $submission->setContact($contact);
-            $submission->setMessage(nl2br($this->request->getParam('message', null)));
+
+            if (array_key_exists('message', $values)) {
+                $submission->setMessage(nl2br($values['message']));
+                unset($values['message']);
+            }
 
             $extra = [];
-            foreach ($this->request->getParams() as $key => $value) {
-                if (!array_key_exists($key, $contactDetails) && $key != 'message') {
-                    $extra[$key] = $value;
+            foreach ($values as $key => $value) {
+                $extra[$key] = $value;
+            }
+
+            $attachments = [];
+            foreach ($form->getChildren() as $field) {
+                if ($field instanceof \Octo\Form\Element\FileUpload) {
+                    $attachments[$field->getUploadedName()] = $field->getUploadedPath();
                 }
             }
 
@@ -190,7 +200,7 @@ class Form extends Block
             $submission = $this->submissionStore->save($submission);
             $params = array('formModel'=>$formModel, 'submission'=>$submission);
             Event::trigger('formsSubmit', $params);
-            $this->sendEmails($formModel, $submission);
+            $this->sendEmails($formModel, $submission, $attachments);
         } catch (\Exception $ex) {
             return false;
         }
@@ -198,26 +208,37 @@ class Form extends Block
         return true;
     }
 
-    protected function getContactDetails()
+    protected function getContactDetails(&$values)
     {
         $contact = [
-            'email' => $this->request->getParam('email', null),
-            'phone' => $this->request->getParam('phone', null),
-            'title' => $this->request->getParam('title', null),
-            'gender' => $this->request->getParam('gender', null),
-            'first_name' => $this->request->getParam('first_name', null),
-            'last_name' => $this->request->getParam('last_name', null),
-            'address' => $this->request->getParam('address', null),
-            'postcode' => $this->request->getParam('postcode', null),
-            'date_of_birth' => $this->request->getParam('date_of_birth', null),
-            'company' => $this->request->getParam('company', null),
-            'marketing_optin' => $this->request->getParam('marketing_optin', null),
+            'email' => array_key_exists('email', $values) ? $values['email'] : null,
+            'phone' => array_key_exists('phone', $values) ? $values['phone'] : null,
+            'title' => array_key_exists('title', $values) ? $values['title'] : null,
+            'gender' => array_key_exists('gender', $values) ? $values['gender'] : null,
+            'first_name' => array_key_exists('name', $values) ? $values['name']['first_name'] : null,
+            'last_name' => array_key_exists('name', $values) ? $values['name']['last_name'] : null,
+            'address' => array_key_exists('address', $values) ? $values['address'] : null,
+            'postcode' => array_key_exists('postcode', $values) ? $values['postcode'] : null,
+            'date_of_birth' => array_key_exists('date_of_birth', $values) ? $values['date_of_birth'] : null,
+            'company' => array_key_exists('company', $values) ? $values['company'] : null,
+            'marketing_optin' => array_key_exists('marketing_optin', $values) ? $values['marketing_optin'] : 0,
         ];
+
+        unset($values['email']);
+        unset($values['phone']);
+        unset($values['title']);
+        unset($values['gender']);
+        unset($values['name']);
+        unset($values['address']);
+        unset($values['postcode']);
+        unset($values['date_of_birth']);
+        unset($values['company']);
+        unset($values['marketing_optin']);
 
         return array_filter($contact);
     }
 
-    protected function sendEmails(FormModel $form, Submission $submission)
+    protected function sendEmails(FormModel $form, Submission $submission, array $attachments = [])
     {
         $config = Config::getInstance();
         $mail = new \PHPMailer();
@@ -245,6 +266,10 @@ class Form extends Block
             $mail->SetFrom($config->site['email_from'], $config->site['email_from_name']);
         } else {
             $mail->SetFrom('octo@block8.net', 'Octo');
+        }
+
+        foreach ($attachments as $name => $path) {
+            $mail->addAttachment($path, $name);
         }
 
         $message         = Template::load('Emails/FormSubmission');
