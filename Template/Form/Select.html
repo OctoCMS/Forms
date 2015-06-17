@@ -2,7 +2,7 @@
     <label if="label">{@label}</label>
 
 	<select id="{@id}" class="form-control {@css}" name="{@name}">
-		<option repeat="options" value="{@key}" .selected="parent.value == value">{@value}</option>
+		<option repeat="options" value="{@key}" .selected="value.selected">{@value.title}</option>
 	</select>
 
     <em if="error" for="{@name}" class="invalid">{@error}</em>
