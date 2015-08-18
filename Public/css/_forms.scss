@@ -1,0 +1,80 @@
+.octo-form {
+  .fa-check {
+    display: none;
+    float: right;
+    margin-top: -28px;
+    font-size: 20px;
+    margin-right: 10px;
+  }
+
+  input, select {
+    &.valid, &.identified {
+      border: 1px solid $octoFormValidColour;
+
+      ~ .fa-check {
+        color: $octoFormValidColour;
+        display: block;
+      }
+    }
+
+    &.invalid {
+      border: 1px solid $octoFormInvalidColour;
+
+      ~ .fa-check {
+        &:before {
+          color: $octoFormInvalidColour;
+          content: "\f071";
+        }
+
+        display: block;
+      }
+    }
+
+    // Credit card fields:
+    &.cc {
+      &.invalid {
+        ~ .card:before {
+          color: $octoFormInvalidColour;
+        }
+      }
+
+      &.cc-number {
+        ~ .card {
+          color: #999;
+          float: right;
+          margin-top: -27px;
+          font-size: 20px;
+          margin-right: 10px;
+        }
+
+        &.identified ~ .card {
+          color: $octoFormValidColour;
+        }
+
+        &.visa ~ .card:before {
+          content: "\f1f0" !important;
+        }
+
+        &.visaelectron ~ .card:before {
+          content: "\f1f0" !important;
+        }
+
+        &.mastercard ~ .card:before {
+          content: "\f1f1" !important;
+        }
+
+        &.amex ~ .card:before {
+          content: "\f1f3" !important;
+        }
+
+        &.discover ~ .card:before {
+          content: "\f1f0" !important;
+        }
+
+        &.dinersclub ~ .card:before {
+          content: "\f1f2" !important;
+        }
+      }
+    }
+  }
+}

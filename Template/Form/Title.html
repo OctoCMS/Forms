@@ -1,18 +1,9 @@
-<div class="form-group {@ccss}">
-    {if label}
-    <label for="{@id}">{@label}</label>
-    {/if}
+<section class="form-group {@ccss}">
+    <label if="label">{@label}</label>
 
-    <div class="controls">
-        <select id="{@id}" class="form-control {@css}" name="{@name}">
+    <select id="{@id}" class="form-control {@css}" name="{@name}">
+        <option repeat="options" value="{@key}" .selected="value.selected">{@value.title}</option>
+    </select>
 
-            {for options}
-            <option value="{@key}"{if key == current_value} selected="selected"{/if}>{@value}</option>
-            {/for}
-        </select>
-
-        {if error}
-        <span class="help-block">{@error}</span>
-        {/if}
-    </div>
-</div>
+    <em if="error" for="{@name}" class="invalid">{@error}</em>
+</section>

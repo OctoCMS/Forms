@@ -2,10 +2,10 @@
     <label if="label" for="{@id}">{@label}</label>
 
     <div class="controls">
-        <input if="pattern" id="{@id}" type="{@type}" class="form-control {@css}"
+        <input if="pattern" id="{@id}" type="{@type}" class="phone form-control {@css}"
                name="{@name}" value="{@value}" pattern="{@pattern}" .required="required">
 
-        <input if="pattern == ''" id="{@id}" type="{@type}" class="form-control {@css}"
+        <input if="pattern == ''" id="{@id}" type="{@type}" class="phone form-control {@css}"
                name="{@name}" value="{@value}" .required="required">
 
         <span if="error" class="help-block">{@error}</span>
