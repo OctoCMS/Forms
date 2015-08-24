@@ -1,7 +1,6 @@
-<span if="error" class="error">{@error}</span>
-
-<label class="checkbox {@css}" for="{@id}">
-    <input class="form-control" type="checkbox" id="{@id}" name="{@name}" value="{@checkedValue}">
-
-    {@label}
-</label>
+<div class="checkbox {@ccss}">
+    <label class="{@css}" for="{@id}">
+        <input type="checkbox" id="{@id}" name="{@name}" value="{@checkedValue}" .required="required" .checked="checked">
+        {@label}
+    </label>
+</div>

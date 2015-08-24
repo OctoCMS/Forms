@@ -92,14 +92,42 @@ if ($) {
                     }
                 });
 
+                thisForm.find('input[type=email]').on('change', function () {
+                    var pc = isValidEmail($(this).val());
+
+                    if (pc) {
+                        if ($(this).find('~ .fa-check').length == 0) {
+                            $(this).after($('<i class="fa fa-check"></i>'));
+                        }
+
+                        $(this).removeClass('invalid');
+                        $(this).addClass('valid');
+                    } else if (($(this).prop('required') || $(this).val().trim() != '') && !pc) {
+                        if ($(this).find('~ .fa-check').length == 0) {
+                            $(this).after($('<i class="fa fa-check"></i>'));
+                        }
+
+                        $(this).removeClass('valid');
+                        $(this).addClass('invalid');
+                    } else {
+                        $(this).removeClass('valid');
+                        $(this).removeClass('invalid');
+                        $(this).find('~ .fa-check').remove();
+                    }
+                });
+
                 // Enable validation:
                 thisForm.on('submit', function (e) {
                     var valid = true;
-
                     var warnings = [];
 
-                    thisForm.find('input[required]').filter(':not(.cc), :not(.phone), :not(.postcode)').each(function () {
-                        if ($(this).val().trim() == '') {
+                    thisForm.find('input[required]').filter(':not(.cc), :not(.phone), :not(.postcode), :not(input[type=email])').each(function () {
+                        if ($(this).attr('type') == 'checkbox') {
+                            if (!$(this).prop('checked')) {
+                                warnings.push({el: $(this), msg: 'Please fill in this field.', noCheck: true});
+                                valid = false;
+                            }
+                        } else if ($(this).val().trim() == '') {
                             warnings.push({el: $(this), msg: 'Please fill in this field.'});
                             valid = false;
                         }
@@ -121,6 +149,13 @@ if ($) {
                         }
                     });
 
+                    thisForm.find('input[type=email]').each(function () {
+                        if (($(this).prop('required') || $(this).val().trim() != '') && !isValidEmail($(this).val())) {
+                            warnings.push({el: $(this), msg: 'Please enter a valid email address.'});
+                            valid = false;
+                        }
+                    });
+
                     if (!validateCardDetails(ccNumber, ccExpiry, ccCvc, true)) {
                         valid = false;
                     }
@@ -134,8 +169,10 @@ if ($) {
 
                             el.addClass('invalid');
 
-                            if (el.find('~ .fa-check').length == 0) {
-                                el.after($('<i class="fa fa-check"></i>'));
+                            if (el.attr('type') != 'checkbox') {
+                                if (el.find('~ .fa-check').length == 0) {
+                                    el.after($('<i class="fa fa-check"></i>'));
+                                }
                             }
 
                             el.tooltip({
@@ -152,11 +189,20 @@ if ($) {
                         }
                     }
 
+                    if (valid) {
+                        $(thisForm).trigger('validated-submit');
+                    }
+
                     return valid;
                 });
             }
         });
     });
+}
+
+function isValidEmail(email) {
+    var reg = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    return reg.test(email);
 }
 
 function validateCardDetails(ccNumber, ccExpiry, ccCvc, highlightCcNumber) {

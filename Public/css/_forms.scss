@@ -1,13 +1,14 @@
 .octo-form {
-  .fa-check {
-    display: none;
-    float: right;
-    margin-top: -28px;
-    font-size: 20px;
-    margin-right: 10px;
-  }
 
   input, select {
+    ~ .fa-check {
+      display: none;
+      float: right;
+      margin-top: -28px;
+      font-size: 20px;
+      margin-right: 10px;
+    }
+
     &.valid, &.identified {
       border: 1px solid $octoFormValidColour;
 
@@ -75,6 +76,12 @@
           content: "\f1f2" !important;
         }
       }
+    }
+  }
+
+  button {
+    .fa-check {
+      margin-right: 10px;
     }
   }
 }
