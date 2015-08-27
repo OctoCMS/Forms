@@ -51,6 +51,13 @@ class FormInstallMigration extends AbstractMigration
         }
 
         $table->save();
+
+        $table->changeColumn('title', 'string', ['limit' => 250, 'null' => false]);
+        $table->changeColumn('recipients', 'text', ['null' => true, 'default' => null]);
+        $table->changeColumn('definition', 'text', ['limit' => MysqlAdapter::TEXT_MEDIUM, 'null' => false]);
+        $table->changeColumn('thankyou_message', 'text', ['limit' => MysqlAdapter::TEXT_MEDIUM, 'null' => true, 'default' => null]);
+
+        $table->save();
     }
 
     protected function createSubmission()
@@ -81,6 +88,14 @@ class FormInstallMigration extends AbstractMigration
         if (!$table->hasColumn('message')) {
             $table->addColumn('message', 'text', ['limit' => MysqlAdapter::TEXT_MEDIUM, 'null' => true, 'default' => null]);
         }
+
+        $table->save();
+
+        $table->changeColumn('form_id', 'integer', ['signed' => false, 'null' => false]);
+        $table->changeColumn('created_date', 'datetime', ['null' => false]);
+        $table->changeColumn('contact_id', 'integer', ['signed' => false, 'null' => false]);
+        $table->changeColumn('extra', 'text', ['limit' => MysqlAdapter::TEXT_MEDIUM, 'null' => true, 'default' => null]);
+        $table->changeColumn('message', 'text', ['limit' => MysqlAdapter::TEXT_MEDIUM, 'null' => true, 'default' => null]);
 
         $table->save();
     }
