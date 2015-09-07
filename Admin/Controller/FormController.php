@@ -83,10 +83,7 @@ class FormController extends Controller
             $this->formStore->save($form);
 
             $this->successMessage('Form saved successfully!', true);
-
-            $this->response = new RedirectResponse();
-            $this->response->setHeader('Location', '/'.$this->config->get('site.admin_uri').'/form');
-            return;
+            $this->redirect('/form');
         }
     }
 
@@ -102,10 +99,7 @@ class FormController extends Controller
             $this->formStore->save($form);
 
             $this->successMessage('Form saved successfully!', true);
-
-            $this->response = new RedirectResponse();
-            $this->response->setHeader('Location', '/'.$this->config->get('site.admin_uri').'/form');
-            return;
+            $this->redirect('/form');
         }
 
         $form = [
@@ -175,11 +169,9 @@ class FormController extends Controller
     public function delete($formId)
     {
         $form = $this->formStore->getById($formId);
-        $this->successMessage($form->getTitle() . ' has been deleted.', true);
-
         $this->formStore->delete($form);
 
-        $this->response = new RedirectResponse();
-        $this->response->setHeader('Location', '/'.$this->config->get('site.admin_uri').'/form');
+        $this->successMessage($form->getTitle() . ' has been deleted.', true);
+        $this->redirect('/form');
     }
 }

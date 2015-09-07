@@ -10,11 +10,11 @@
 
                 <div class="box-body">
                     {if form.id}
-                    <form style="border: 0" action="/{@adminUri}/form/edit/{@form.id}" method="POST" class="form">
+                    <form style="border: 0" action="{@adminUri}/form/edit/{@form.id}" method="POST" class="form">
                         {/if}
 
                         {ifnot form.id}
-                        <form style="border: 0" action="/{@adminUri}/form/add" method="POST">
+                        <form style="border: 0" action="{@adminUri}/form/add" method="POST">
                             {/ifnot}
 
                             <input type="hidden" id="form-definition" name="definition" value="{@form.definition}">
