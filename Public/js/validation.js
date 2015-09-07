@@ -40,30 +40,36 @@ if ($) {
                         $(this).val(formatLocal('GB', $(this).val()));
                     });
 
-                    thisForm.find('input.phone').on('change', function (e) {
-                        $(this).val(formatLocal('GB', $(this).val()));
-
-                        var isValid = isValidNumber($(this).val(), 'GB');
-
-                        if (isValid) {
-                            if ($(this).find('~ .fa-check').length == 0) {
-                                $(this).after($('<i class="fa fa-check"></i>'));
-                            }
-
-                            $(this).removeClass('invalid');
-                            $(this).addClass('valid');
-                        } else if (($(this).prop('required') || $(this).val().trim() != '') && !isValid) {
-                            if ($(this).find('~ .fa-check').length == 0) {
-                                $(this).after($('<i class="fa fa-check"></i>'));
-                            }
-
-                            $(this).removeClass('valid');
-                            $(this).addClass('invalid');
-                        } else {
-                            $(this).removeClass('valid');
-                            $(this).removeClass('invalid');
-                            $(this).find('~ .fa-check').remove();
+                    thisForm.find('input.phone').each(function () {
+                        if ($(this).val() != '') {
+                            $(this).val(formatLocal('GB', $(this).val()));
                         }
+
+                        $(this).on('change', function (e) {
+                            $(this).val(formatLocal('GB', $(this).val()));
+
+                            var isValid = isValidNumber($(this).val(), 'GB');
+
+                            if (isValid) {
+                                if ($(this).find('~ .fa-check').length == 0) {
+                                    $(this).after($('<i class="fa fa-check"></i>'));
+                                }
+
+                                $(this).removeClass('invalid');
+                                $(this).addClass('valid');
+                            } else if (($(this).prop('required') || $(this).val().trim() != '') && !isValid) {
+                                if ($(this).find('~ .fa-check').length == 0) {
+                                    $(this).after($('<i class="fa fa-check"></i>'));
+                                }
+
+                                $(this).removeClass('valid');
+                                $(this).addClass('invalid');
+                            } else {
+                                $(this).removeClass('valid');
+                                $(this).removeClass('invalid');
+                                $(this).find('~ .fa-check').remove();
+                            }
+                        });
                     });
                 }
 
