@@ -10,124 +10,15 @@ if ($) {
                     trigger: 'focus'
                 });
 
-                // Credit cards fields:
-                var ccNumber = thisForm.find('input.cc-number');
-
-                if (ccNumber.length && typeof ccNumber.payment != "undefined") {
-                    var ccExpiry = thisForm.find('input.cc-expiry');
-                    var ccCvc = thisForm.find('input.cc-cvc');
-
-                    // Set up formatting:
-                    ccNumber.payment('formatCardNumber');
-                    ccExpiry.payment('formatCardExpiry');
-                    ccCvc.payment('formatCardCVC');
-
-                    ccExpiry.on('change paste', function () {
-                        validateCardDetails(ccNumber, ccExpiry, ccCvc);
-                    });
-
-                    ccCvc.on('change paste', function () {
-                        validateCardDetails(ccNumber, ccExpiry, ccCvc);
-                    });
-                }
-
-                if (typeof formatLocal != "undefined") {
-                    thisForm.find('input.phone').on('keyup', function (e) {
-                        if (e.keyCode == 9 || e.keyCode == 91) {
-                            return;
-                        }
-
-                        $(this).val(formatLocal('GB', $(this).val()));
-                    });
-
-                    thisForm.find('input.phone').each(function () {
-                        if ($(this).val() != '') {
-                            $(this).val(formatLocal('GB', $(this).val()));
-                        }
-
-                        $(this).on('change', function (e) {
-                            $(this).val(formatLocal('GB', $(this).val()));
-
-                            var isValid = isValidNumber($(this).val(), 'GB');
-
-                            if (isValid) {
-                                if ($(this).find('~ .fa-check').length == 0) {
-                                    $(this).after($('<i class="fa fa-check"></i>'));
-                                }
-
-                                $(this).removeClass('invalid');
-                                $(this).addClass('valid');
-                            } else if (($(this).prop('required') || $(this).val().trim() != '') && !isValid) {
-                                if ($(this).find('~ .fa-check').length == 0) {
-                                    $(this).after($('<i class="fa fa-check"></i>'));
-                                }
-
-                                $(this).removeClass('valid');
-                                $(this).addClass('invalid');
-                            } else {
-                                $(this).removeClass('valid');
-                                $(this).removeClass('invalid');
-                                $(this).find('~ .fa-check').remove();
-                            }
-                        });
-                    });
-                }
-
-                thisForm.find('input.postcode').on('change', function () {
-                    var pc = checkPostCode($(this).val());
-
-                    if (pc) {
-                        if ($(this).find('~ .fa-check').length == 0) {
-                            $(this).after($('<i class="fa fa-check"></i>'));
-                        }
-
-                        $(this).val(pc);
-                        $(this).removeClass('invalid');
-                        $(this).addClass('valid');
-                    } else if (($(this).prop('required') || $(this).val().trim() != '') && !pc) {
-                        if ($(this).find('~ .fa-check').length == 0) {
-                            $(this).after($('<i class="fa fa-check"></i>'));
-                        }
-
-                        $(this).removeClass('valid');
-                        $(this).addClass('invalid');
-                    } else {
-                        $(this).removeClass('valid');
-                        $(this).removeClass('invalid');
-                        $(this).find('~ .fa-check').remove();
-                    }
-                });
-
-                thisForm.find('input[type=email]').on('change', function () {
-                    var pc = isValidEmail($(this).val());
-
-                    if (pc) {
-                        if ($(this).find('~ .fa-check').length == 0) {
-                            $(this).after($('<i class="fa fa-check"></i>'));
-                        }
-
-                        $(this).removeClass('invalid');
-                        $(this).addClass('valid');
-                    } else if (($(this).prop('required') || $(this).val().trim() != '') && !pc) {
-                        if ($(this).find('~ .fa-check').length == 0) {
-                            $(this).after($('<i class="fa fa-check"></i>'));
-                        }
-
-                        $(this).removeClass('valid');
-                        $(this).addClass('invalid');
-                    } else {
-                        $(this).removeClass('valid');
-                        $(this).removeClass('invalid');
-                        $(this).find('~ .fa-check').remove();
-                    }
-                });
 
                 // Enable validation:
                 thisForm.on('submit', function (e) {
                     var valid = true;
                     var warnings = [];
 
-                    thisForm.find('input[required]').filter(':not(.cc), :not(.phone), :not(.postcode), :not(input[type=email])').each(function () {
+                    thisForm.find('input[required]').filter(':not(.custom-validator)').each(function () {
+                        validationReset($(this));
+
                         if ($(this).attr('type') == 'checkbox') {
                             if (!$(this).prop('checked')) {
                                 warnings.push({el: $(this), msg: 'Please fill in this field.', noCheck: true});
@@ -139,32 +30,14 @@ if ($) {
                         }
                     });
 
-                    if (typeof isValidNumber != "undefined") {
-                        thisForm.find('input.phone').each(function () {
-                            if (($(this).prop('required') || $(this).val().trim() != '') && !isValidNumber($(this).val(), 'GB')) {
-                                warnings.push({el: $(this), msg: 'Please enter a valid phone number.'});
-                                valid = false;
-                            }
-                        });
-                    }
+                    thisForm.find('input.custom-validator').each(function () {
+                        var val = $(this).data('validator');
 
-                    thisForm.find('input.postcode').each(function () {
-                        if (($(this).prop('required') || $(this).val().trim() != '') && !checkPostCode($(this).val())) {
-                            warnings.push({el: $(this), msg: 'Please enter a valid postcode.'});
+                        if (typeof val == 'function' && !val()) {
                             valid = false;
                         }
                     });
 
-                    thisForm.find('input[type=email]').each(function () {
-                        if (($(this).prop('required') || $(this).val().trim() != '') && !isValidEmail($(this).val())) {
-                            warnings.push({el: $(this), msg: 'Please enter a valid email address.'});
-                            valid = false;
-                        }
-                    });
-
-                    if (!validateCardDetails(ccNumber, ccExpiry, ccCvc, true)) {
-                        valid = false;
-                    }
 
                     if (!valid) {
                         e.preventDefault();
@@ -173,13 +46,7 @@ if ($) {
                             var el = warnings[i]['el'];
                             var msg = warnings[i]['msg'];
 
-                            el.addClass('invalid');
-
-                            if (el.attr('type') != 'checkbox') {
-                                if (el.find('~ .fa-check').length == 0) {
-                                    el.after($('<i class="fa fa-check"></i>'));
-                                }
-                            }
+                            validationFailed(el);
 
                             el.tooltip({
                                 placement: 'bottom',
@@ -189,8 +56,8 @@ if ($) {
 
 
                             el.on('change paste keyup', function () {
+                                validationReset(el);
                                 el.tooltip('hide');
-                                el.removeClass('invalid');
                             });
                         }
                     }
@@ -206,66 +73,309 @@ if ($) {
     });
 }
 
+function validationReset(field) {
+    field.removeClass('valid');
+    field.removeClass('invalid');
+    field.find('~ .fa-check').remove();
+}
+
+function validationFailed(field) {
+    field.addClass('invalid');
+
+    if (field.attr('type') != 'checkbox') {
+        field.after($('<i class="fa fa-check"></i>'));
+    }
+}
+
+function validationSuccess(field) {
+    field.addClass('valid');
+
+    if (field.attr('type') != 'checkbox') {
+        field.after($('<i class="fa fa-check"></i>'));
+    }
+}
+
+
+/***********************************************
+ * Phone Number Validation
+ ***********************************************/
+$(document).ready(function () {
+    // If Google's phoneformat library is not defined, skip all:
+    if (typeof formatLocal == 'undefined') {
+        return;
+    }
+
+    $('.octo-form .phone').each(function () {
+        var phone = $(this);
+        var parent = phone.parents('form').first();
+        var country = parent.find('.country');
+        var hasCountry = country.length ? true : false;
+
+        // As long as the country:
+        if (!hasCountry || country.val() == 'GB') {
+            phone.addClass('custom-validator');
+        }
+
+        var getCurrentCountry = function () {
+            return hasCountry ? country.val() : 'GB';
+        };
+
+        // Set up the custom validator:
+        phone.data('validator', function () {
+            validationReset(phone);
+
+            var result = isValidNumber(phone.val(), getCurrentCountry());
+
+            if (result) {
+                phone.val(formatLocal(getCurrentCountry(), phone.val()));
+                validationSuccess(phone);
+                return true;
+            }
+
+            if (!result && (phone.prop('required') || phone.val().trim() != '')) {
+                validationFailed(phone);
+                return false;
+            }
+
+            return true;
+        });
+
+        if (hasCountry) {
+            country.on('change', function () {
+                phone.trigger('change');
+            });
+        }
+
+        phone.on('change', phone.data('validator'));
+
+        if (phone.val() != '') {
+            phone.val(formatLocal(getCurrentCountry(), phone.val()));
+            phone.trigger('change');
+        }
+    });
+
+});
+
+
+/***********************************************
+ * Email Address Validation
+ ***********************************************/
+$(document).ready(function () {
+    $('.octo-form input[type=email]').each(function () {
+        var email = $(this);
+
+        // Set up the custom validator:
+        email.data('validator', function () {
+            validationReset(email);
+
+            var result = isValidEmail(email.val());
+
+            if (result) {
+                validationSuccess(email);
+                return true;
+            }
+
+            if (!result && (email.prop('required') || email.val().trim() != '')) {
+                validationFailed(email);
+                return false;
+            }
+
+            return true;
+        });
+
+        email.on('change', email.data('validator'));
+        email.addClass('custom-validator');
+
+        if (email.val() != '') {
+            email.trigger('change');
+        }
+    });
+});
+
+
 function isValidEmail(email) {
     var reg = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
     return reg.test(email);
 }
 
-function validateCardDetails(ccNumber, ccExpiry, ccCvc, highlightCcNumber) {
-    // If we don't have any credit card fields, then this validation check should pass:
-    if (!ccNumber.length) {
-        return true;
-    }
 
-    var expiry = ccExpiry.payment('cardExpiryVal');
-    var validateNumber = $.payment.validateCardNumber(ccNumber.val());
-    var validateExpiry = $.payment.validateCardExpiry(expiry["month"], expiry["year"]);
-    var validateCVC = $.payment.validateCardCVC(ccCvc.val());
-    var valid = true;
+/***********************************************
+ * Password Validation
+ ***********************************************/
+$(document).ready(function () {
+    $('.octo-form input[type=password]').each(function () {
+        var password = $(this);
 
-    if (validateExpiry) {
-        ccExpiry.removeClass('invalid');
-        ccExpiry.addClass('valid');
-    } else {
-        if (ccExpiry.val() != '') {
-            ccExpiry.addClass('invalid');
+        // Set up the custom validator:
+        password.data('validator', function (e) {
+            validationReset(password);
+
+            var result = (password.val().length >= 7);
+
+            if (result) {
+                validationSuccess(password);
+                return true;
+            }
+
+            if (!result && (password.prop('required') || password.val().trim() != '')) {
+                validationFailed(password);
+                return false;
+            }
+
+            return true;
+        });
+
+        password.on('change', password.data('validator'));
+        password.on('keyup', password.data('validator'));
+        password.addClass('custom-validator');
+
+        if (password.val() != '') {
+            password.trigger('change');
+        }
+    });
+});
+
+
+/***********************************************
+ * Credit Card Validation
+ ***********************************************/
+
+$(document).ready(function () {
+    $('.octo-form').each(function () {
+        var thisForm = $(this);
+        var ccNumber = thisForm.find('input.cc-number');
+
+        if (ccNumber.length && typeof ccNumber.payment != "undefined") {
+            var ccExpiry = thisForm.find('input.cc-expiry');
+            var ccCvc = thisForm.find('input.cc-cvc');
+
+            // Set up formatting:
+            ccNumber.payment('formatCardNumber');
+            ccExpiry.payment('formatCardExpiry');
+            ccCvc.payment('formatCardCVC');
+
+            ccNumber.addClass('custom-validator');
+            ccExpiry.addClass('custom-validator');
+            ccCvc.addClass('custom-validator');
+
+            // Set up custom validators:
+            ccNumber.data('validator', function (e) {
+                validationReset(ccNumber);
+
+                var result = $.payment.validateCardNumber(ccNumber.val());
+
+                if (result) {
+                    validationSuccess(ccNumber);
+                    $('.cc-type').val($.payment.cardType(ccNumber.val()));
+                    return true;
+                }
+
+                if (!result && (ccNumber.prop('required') || ccNumber.val().trim() != '')) {
+                    validationFailed(ccNumber);
+                    return false;
+                }
+
+                return true;
+            }).on('change paste', ccNumber.data('validator'));
+
+            ccExpiry.data('validator', function (e) {
+                validationReset(ccExpiry);
+
+                var expiry = ccExpiry.payment('cardExpiryVal');
+                var result = $.payment.validateCardExpiry(expiry["month"], expiry["year"]);
+
+                if (result) {
+                    validationSuccess(ccExpiry);
+                    return true;
+                }
+
+                if (!result && (ccExpiry.prop('required') || ccExpiry.val().trim() != '')) {
+                    validationFailed(ccExpiry);
+                    return false;
+                }
+
+                return true;
+            }).on('change paste', ccExpiry.data('validator'));
+
+            ccCvc.data('validator', function (e) {
+                validationReset(ccCvc);
+
+                var result = $.payment.validateCardCVC(ccCvc.val());
+
+                if (result) {
+                    validationSuccess(ccCvc);
+                    return true;
+                }
+
+                if (!result && (ccCvc.prop('required') || ccCvc.val().trim() != '')) {
+                    validationFailed(ccCvc);
+                    return false;
+                }
+
+                return true;
+            }).on('change paste', ccCvc.data('validator'));
+        }
+    });
+});
+
+
+/***********************************************
+ * Postcode Validation
+ ***********************************************/
+
+$(document).ready(function () {
+
+    $('.octo-form .postcode').each(function () {
+        var pc = $(this);
+        var parent = pc.parents('fieldset, form').first();
+        var country = parent.find('.country');
+        var hasCountry = country.length ? true : false;
+
+        // As long as the country:
+        if (!hasCountry || country.val() == 'GB') {
+            pc.addClass('custom-validator');
         }
 
-        ccExpiry.removeClass('valid');
-        valid = false;
-    }
+        // Set up the custom validator:
+        pc.data('validator', function () {
+            validationReset(pc);
 
-    if (validateCVC) {
-        ccCvc.removeClass('invalid');
-        ccCvc.addClass('valid');
-    } else {
-        if (ccCvc.val() != '') {
-            ccCvc.addClass('invalid');
+            var result = checkPostCode(pc.val());
+
+            if (result) {
+                pc.val(result);
+                validationSuccess(pc);
+                return true;
+            }
+
+            if (!result && (pc.prop('required') || pc.val().trim() != '')) {
+                validationFailed(pc);
+                return false;
+            }
+
+            return true;
+        });
+
+        country.on('change', function () {
+            if (country.val() == 'GB') {
+                pc.on('change', pc.data('validator'));
+                pc.addClass('custom-validator');
+                pc.trigger('change');
+            } else {
+                validationReset(pc);
+                pc.off('change');
+                pc.removeClass('custom-validator');
+            }
+        });
+
+        pc.on('change', pc.data('validator'));
+
+        if (pc.val() != '') {
+            pc.trigger('change');
         }
+    });
 
-        ccCvc.removeClass('valid');
-        valid = false;
-    }
-
-    if (validateNumber && highlightCcNumber) {
-        ccNumber.removeClass('invalid');
-        ccNumber.addClass('valid');
-
-        $('.cc-type').val($.payment.cardType(ccNumber.val()));
-
-    } else if (!validateNumber && highlightCcNumber) {
-        ccNumber.addClass('invalid');
-        ccNumber.removeClass('valid');
-
-        valid = false;
-    } else if (!validateNumber) {
-        valid = false;
-    }
-
-    return valid;
-}
-
-
+});
 
 /*==================================================================================================
 

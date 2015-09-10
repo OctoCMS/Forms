@@ -40,6 +40,10 @@
       }
 
       &.cc-number {
+        ~ .fa-check {
+          display: none !important;
+        }
+
         ~ .card {
           color: #999;
           float: right;
