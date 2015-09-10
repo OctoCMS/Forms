@@ -115,10 +115,7 @@ $(document).ready(function () {
             return;
         }
 
-        // As long as the country:
-        if (!hasCountry || country.val() == 'GB') {
-            phone.addClass('custom-validator');
-        }
+        phone.addClass('custom-validator');
 
         var getCurrentCountry = function () {
             return hasCountry ? country.val() : 'GB';
