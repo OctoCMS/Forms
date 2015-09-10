@@ -111,6 +111,10 @@ $(document).ready(function () {
         var country = parent.find('.country');
         var hasCountry = country.length ? true : false;
 
+        if (parent.data('validation') != 'on') {
+            return;
+        }
+
         // As long as the country:
         if (!hasCountry || country.val() == 'GB') {
             phone.addClass('custom-validator');
@@ -163,6 +167,12 @@ $(document).ready(function () {
 $(document).ready(function () {
     $('.octo-form input[type=email]').each(function () {
         var email = $(this);
+        var parent = email.parents('form').first();
+
+
+        if (parent.data('validation') != 'on') {
+            return;
+        }
 
         // Set up the custom validator:
         email.data('validator', function () {
@@ -205,6 +215,12 @@ function isValidEmail(email) {
 $(document).ready(function () {
     $('.octo-form input[type=password]').each(function () {
         var password = $(this);
+        var parent = password.parents('form').first();
+
+
+        if (parent.data('validation') != 'on') {
+            return;
+        }
 
         // Set up the custom validator:
         password.data('validator', function (e) {
@@ -244,6 +260,10 @@ $(document).ready(function () {
     $('.octo-form').each(function () {
         var thisForm = $(this);
         var ccNumber = thisForm.find('input.cc-number');
+
+        if (thisForm.data('validation') != 'on') {
+            return;
+        }
 
         if (ccNumber.length && typeof ccNumber.payment != "undefined") {
             var ccExpiry = thisForm.find('input.cc-expiry');
@@ -330,6 +350,10 @@ $(document).ready(function () {
         var parent = pc.parents('fieldset, form').first();
         var country = parent.find('.country');
         var hasCountry = country.length ? true : false;
+
+        if (pc.parents('form').data('validation') != 'on') {
+            return;
+        }
 
         // As long as the country:
         if (!hasCountry || country.val() == 'GB') {
