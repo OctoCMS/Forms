@@ -14,7 +14,7 @@ use Octo\System\Model\Contact;
 use Octo\Forms\Model\Form as FormModel;
 use Octo\Forms\Model\Submission;
 use Octo\Store;
-use Octo\Html\Template;
+use Octo\Template;
 use Octo\Event;
 
 class Form extends Block
@@ -272,7 +272,7 @@ class Form extends Block
             $mail->addAttachment($path, $name);
         }
 
-        $message         = Template::load('Emails/FormSubmission');
+        $message         = new Template('Emails/FormSubmission');
         $message->form   = $form;
         $message->submission = $submission;
         $body = $message->render();

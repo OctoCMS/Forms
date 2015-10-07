@@ -1,0 +1,6 @@
+        <div class="checkbox {{ ccss }}">
+            <label class="{{ css }}" for="{{ id }}">
+                <input type="checkbox" id="{{ id }}" name="{{ name }}" value="{{ checkedValue }}"{% if required %} required{% endif %}{% if checked %} checked{% endif %}>
+                {{ label }}
+            </label>
+        </div>

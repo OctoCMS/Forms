@@ -1,0 +1,11 @@
+<section class="address-field">
+    {% if label %}
+    <label for="{{ id }}">{{ label }}</label>
+    {% endif %}
+
+    {% for value in children %}
+    <div>
+        {{ value|raw }}
+    </div>
+    {% endfor %}
+</section>

@@ -1,0 +1,11 @@
+<section class="form-group{% if error %} error{% endif %}">
+    {% if label %}
+        <label for="{{ id }}">{{ label }}</label>
+    {% endif %}
+
+    <input id="{{ id }}" type="{{ type }}" class="form-control {{ css }}" name="{{ name }}" value="{{ value }}"{% if pattern %}  pattern="{{ pattern }}"{% endif %}{% if required %} required{% endif %}{% if not enabled %} disabled{% endif %}>
+
+    {% if error %}
+    <em for="{{ name }}" class="invalid">{{ error }}</em>
+    {% endif %}
+</section>

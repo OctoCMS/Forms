@@ -1,0 +1,13 @@
+<div class="form-group {{ css }}">
+    {% if label %}
+        <label for="{{ id }}">{{ label }}</label>
+    {% endif %}
+
+	<div class="controls">
+        {% for value in children %}
+        <div>
+            {{ value|raw }}
+        </div>
+        {% endfor %}
+	</div>
+</div>

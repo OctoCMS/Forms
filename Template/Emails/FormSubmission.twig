@@ -1,51 +1,58 @@
 <div style="padding: 20px">
     <h3 style="font-family: Tahoma, arial, sans-serif; color: #246; margin-bottom: 10px">
-        A visitor has filled in your "{@form.title}" form.
+        A visitor has filled in your "{{ form.title }}" form.
     </h3>
 
     <p style="font-family: Tahoma, arial, sans-serif; color: #666; margin-bottom: 10px">
-    View this message online: {@config.site.full_admin_url}/form/submission/{@submission.id}
+    View this message online: {{ config.site.full_admin_url }}/form/submission/{{ submission.id }}
     </p>
 
     <br>
 
     <table width="100%" style="background: #fff; border-radius: 7px; border: 1px solid #369">
-
-        <tr if="submission.Contact.first_name">
+        {% if submission.Contact.first_name %}
+        <tr>
             <td style="width: 175px; font-family: Tahoma, arial, sans-serif; background: #EDF9FF; padding: 5px; font-weight: bold">
                 Name
             </td>
             <td style="font-family: Tahoma, arial, sans-serif; padding: 5px">
-                {@submission.Contact.title} {@submission.Contact.first_name} {@submission.Contact.last_name}
+                {{ submission.Contact.title }} {{ submission.Contact.first_name }} {{ submission.Contact.last_name }}
             </td>
         </tr>
+        {% endif %}
 
-        <tr if="submission.Contact.email">
+        {% if submission.Contact.email %}
+        <tr>
             <td style="width: 175px; font-family: Tahoma, arial, sans-serif; background: #EDF9FF; padding: 5px; font-weight: bold">
                 Email address
             </td>
             <td style="font-family: Tahoma, arial, sans-serif; padding: 5px">
-                {@submission.Contact.email}
+                {{ submission.Contact.email }}
             </td>
         </tr>
+        {% endif %}
 
-        <tr if="submission.Contact.phone">
+        {% if submission.Contact.phone %}
+        <tr>
             <td style="width: 175px; font-family: Tahoma, arial, sans-serif; background: #EDF9FF; padding: 5px; font-weight: bold">
                 Phone
             </td>
             <td style="font-family: Tahoma, arial, sans-serif; padding: 5px">
-                {@submission.Contact.phone}
+                {{ submission.Contact.phone }}
             </td>
         </tr>
+        {% endif %}
 
-        <tr if="submission.message">
+        {% if submission.message %}
+        <tr>
             <td style="vertical-align: top; width: 175px; font-family: Tahoma, arial, sans-serif; background: #EDF9FF; padding: 5px; font-weight: bold">
                 Message
             </td>
             <td style="vertical-align: top; font-family: Tahoma, arial, sans-serif; padding: 5px">
-                {@submission.message}
+                {{ submission.message }}
             </td>
         </tr>
+        {% endif %}
     </table>
 
 </div>

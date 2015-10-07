@@ -1,0 +1,11 @@
+<section class="form-group">
+    {% if label %}
+        <label for="{{ id }}">{{ label }}</label>
+    {% endif %}
+
+    {% for item in children %}
+    <span>
+        {{ item|raw }}
+    </span>
+    {% endfor %}
+</section>

@@ -1,0 +1,32 @@
+<input type="hidden" name="{{ name }}[type]" class="cc-type">
+
+<section class="form-group{% if error %} error{% endif %}">
+    <label for="{{ id }}">Name on Card</label>
+    <input type="text" id="{{ id }}" name="{{ name }}[name]" class="form-control cc-name" autocomplete="cc-name" placeholder="" {% if required %} required{% endif %} title="Cardholder name, as printed on the card.">
+</section>
+
+<section class="form-group{% if error %} error{% endif %}">
+    <label for="{{ id }}">Card Number</label>
+    <input type="tel" id="{{ id }}" name="{{ name }}[number]" class="form-control cc cc-number" autocomplete="cc-number" placeholder="&#9679;&#9679;&#9679;&#9679; &#9679;&#9679;&#9679;&#9679; &#9679;&#9679;&#9679;&#9679; &#9679;&#9679;&#9679;&#9679;" {% if required %} required{% endif %} title="Your long (usually 16 digit) card number.">
+    <i class="card fa fa-credit-card"></i>
+</section>
+
+<div class="row">
+    <div class="col-sm-3">
+        <section>
+            <label for="{{ id }}">Expiry (MM/YY)</label>
+            <input type="tel" id="{{ id }}" name="{{ name }}[expiry]" class="form-control cc cc-expiry" autocomplete="cc-exp" placeholder="MM / YY" {% if required %} required{% endif %} title="Your card's expiry date as shown on the card (MM/YY).">
+        </section>
+    </div>
+
+    <div class="col-sm-3">
+        <section>
+        <label for="{{ id }}">CVC</label>
+        <input type="tel" id="{{ id }}" name="{{ name }}[cvc]" class="form-control cc cc-cvc" autocomplete="off" {% if required %} required{% endif %} title="This is the 3 digit number at the end of your card's signature strip.">
+        </section>
+    </div>
+</div>
+
+{% if error %}
+    <em for="{{ name }}" class="invalid">{{ error }}</em>
+{% endif %}

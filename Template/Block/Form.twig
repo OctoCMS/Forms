@@ -1,0 +1,17 @@
+{% if thankyou %}
+<div class="alert alert-success">
+    {{ thankyou|raw }}
+</div>
+{% endif %}
+
+{% if error %}
+<div class="alert alert-danger">
+    {{ error|raw }}
+</div>
+{% endif %}
+
+{% if form %}
+<div>
+    {{ form|raw }}
+</div>
+{% endif %}

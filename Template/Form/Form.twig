@@ -1,0 +1,13 @@
+<form id="{{ id }}" class="octo-form form {{ css }}" action="{{ action }}" method="{{ method }}" enctype="multipart/form-data" data-validation="{{ validation ? 'on' : 'off' }}">
+
+    {% if label %}
+        <header>{{ label }}</header>
+    {% endif %}
+
+    {% for value in children %}
+        <div>
+            {{ value|raw }}
+        </div>
+    {% endfor %}
+
+</form>

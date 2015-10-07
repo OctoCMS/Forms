@@ -1,0 +1,11 @@
+<fieldset>
+    {% if label %}
+	<legend>{{ label }}</legend>
+    {% endif %}
+
+    {% for value in children %}
+        <div>
+            {{ value|raw }}
+        </div>
+    {% endfor %}
+</fieldset>

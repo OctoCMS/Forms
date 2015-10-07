@@ -1,0 +1,21 @@
+<section class="form-group{% if error %} error{% endif %}">
+    {% if label %}
+        <label for="{{ id }}">{{ label }}</label>
+    {% endif %}
+
+    {% if imageId %}
+        <div class="image_form_container">
+            <p><img src="/media/render/{{ imageId }}/200/auto"></p>
+            <label for="remove_{{ name }}"><input type="checkbox" value="1" name="remove_{{ name }}" id="remove_{{ name }}"> Remove current image</label>
+        </div>
+    {% endif %}
+
+    <label class="input">
+        <input id="{{ id }}" type="{{ type }}" name="{{ name }}" value="{{ value }}">
+    </label>
+
+    {% if error %}
+        <em for="{{ name }}" class="invalid">{{ error }}</em>
+    {% endif %}
+</section>
+
