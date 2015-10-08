@@ -1,4 +1,4 @@
-<section .class="(error != '') form-group error ? form-group">
+<section class="form-group{% if error %} error{% endif %}">
     {% if label %}
         <label for="{{ id }}">{{ label }}</label>
     {% endif %}
