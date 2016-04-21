@@ -20,7 +20,7 @@ class SubmissionCollection extends Collection
      * @param Submission $value
      * @return SubmissionCollection
      */
-    public function add($key, Submission $value)
+    public function addSubmission($key, Submission $value)
     {
         return parent::add($key, $value);
     }

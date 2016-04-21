@@ -20,7 +20,7 @@ class FormCollection extends Collection
      * @param Form $value
      * @return FormCollection
      */
-    public function add($key, Form $value)
+    public function addForm($key, Form $value)
     {
         return parent::add($key, $value);
     }
