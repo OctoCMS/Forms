@@ -2,7 +2,7 @@
 
 namespace Octo\Forms\Event;
 
-use Octo\Admin\Template;
+use Octo\Template;
 use Octo\Event\Listener;
 use Octo\Event\Manager;
 use Octo\Store;
@@ -19,21 +19,25 @@ class DashboardWidget extends Listener
     public function getStatistics(&$stats)
     {
         $submissionStore = Store::get('Submission');
+        $total = $submissionStore->getTotal();
 
-        $stats[] = [
-            'title' => 'Form Submissions',
-            'count' => number_format($submissionStore->getTotal()),
-            'icon' => 'email',
-            'color' => 'green',
-            'link' => '/form',
-        ];
+        if ($total) {
+            $stats[] = [
+                'title' => 'Form Submissions',
+                'count' => number_format($total),
+                'icon' => 'email',
+                'color' => 'green',
+                'link' => '/form',
+            ];
+        }
+
     }
 
     public function getWidget(&$widgets)
     {
         $submissionStore = Store::get('Submission');
 
-        $view = Template::getAdminTemplate('Dashboard/widget', 'Forms');
+        $view = new Template("Dashboard/latest-form-submissions", "admin");
         $view->latestSubmissions = $submissionStore->getAll(0, 5);
 
         $widgets[] = ['order' => 10, 'html' => $view->render()];

@@ -1,4 +1,4 @@
-{if canAccess(uri: "/form")}
+{% if user.canAccess("/form") and latestSubmissions|length > 0 %}
 <div class="col-sm-6 block">
     <div class="box box-success">
         <div class="box-header">
@@ -14,19 +14,20 @@
                 </tr>
                 </thead>
                 <tbody>
-                {for latestSubmissions}
+
+                {% for submission in latestSubmissions %}
                 <tr>
-                    <td>{@value.Contact.email}</td>
+                    <td>{{ value.Contact.email }}</td>
                     <td>
-                        {if canAccess(uri: "/form/submission")}
-                        <a class="btn btn-default btn-sm" href="{@adminUri}/form/submission/{@value.id}">View</a>
-                        {/if}
+                        {% if user.canAccess("/form/submission") %}
+                        <a class="btn btn-default btn-sm" href="{{ adminUri }}/form/submission/{{ value.id }}">View</a>
+                        {% endif %}
                     </td>
                 </tr>
-                {/for}
+                {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
 </div>
-{/if}
+{% endif %}

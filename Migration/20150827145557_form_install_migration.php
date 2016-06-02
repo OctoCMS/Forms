@@ -30,7 +30,7 @@ class FormInstallMigration extends AbstractMigration
         $table = $this->table('form', ['id' => false, 'primary_key' => ['id']]);
 
         if (!$this->hasTable('form')) {
-            $table->addColumn('id', 'integer', ['signed' => false, 'null' => false]);
+            $table->addColumn('id', 'integer', ['signed' => false, 'null' => false, 'identity' => true]);
             $table->create();
         }
 
@@ -65,7 +65,7 @@ class FormInstallMigration extends AbstractMigration
         $table = $this->table('submission', ['id' => false, 'primary_key' => ['id']]);
 
         if (!$this->hasTable('submission')) {
-            $table->addColumn('id', 'integer', ['signed' => false, 'null' => false]);
+            $table->addColumn('id', 'integer', ['signed' => false, 'null' => false, 'identity' => true]);
             $table->create();
         }
 
