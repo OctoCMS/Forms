@@ -100,7 +100,7 @@ class Form extends Block
         }
 
         $this->formModel = $this->formStore->getById($formId);
-        $this->form = $this->createForm($this->formModel->getDefinition());
+        $this->form = $this->createForm($this->formModel->getDefinitionArray());
 
         if ($this->request->getMethod() == 'POST') {
             if ($this->processForm($this->formModel, $this->form)) {

@@ -12,11 +12,9 @@ use Octo;
  * Form Model
  * @uses Octo\Forms\Model\Base\FormBaseBase
  */
-class Form extends Octo\Model
+class Form extends Base\FormBase
 {
-    use Base\FormBase;
-
-    public function setDefinition($value)
+	public function setDefinitionArray(array $value)
     {
         if (is_array($value)) {
             $value = json_encode($value);
@@ -34,12 +32,12 @@ class Form extends Octo\Model
     }
 
 
-    public function getDefinition()
+    public function getDefinitionArray() : array
     {
-        $value = $this->data['definition'];
+        $value = json_decode($this->data['definition'], true);
 
-        if (is_string($value)) {
-            $value = json_decode($value, true);
+        if (!is_array($value)) {
+            $value = [];
         }
 
         return $value;

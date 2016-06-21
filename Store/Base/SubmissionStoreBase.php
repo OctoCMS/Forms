@@ -2,16 +2,11 @@
 
 /**
  * Submission base store for table: submission
+
  */
 
 namespace Octo\Forms\Store\Base;
 
-use PDOException;
-use b8\Cache;
-use b8\Database;
-use b8\Database\Query;
-use b8\Database\Query\Criteria;
-use b8\Exception\StoreException;
 use Octo\Store;
 use Octo\Forms\Model\Submission;
 use Octo\Forms\Model\SubmissionCollection;
@@ -19,167 +14,75 @@ use Octo\Forms\Model\SubmissionCollection;
 /**
  * Submission Base Store
  */
-trait SubmissionStoreBase
+class SubmissionStoreBase extends Store
 {
-    protected function init()
-    {
-        $this->tableName = 'submission';
-        $this->modelName = '\Octo\Forms\Model\Submission';
-        $this->primaryKey = 'id';
-    }
+    protected $table = 'submission';
+    protected $model = 'Octo\Forms\Model\Submission';
+    protected $key = 'id';
+
     /**
     * @param $value
-    * @param string $useConnection Connection type to use.
-    * @throws StoreException
-    * @return Submission
+    * @return Submission|null
     */
-    public function getByPrimaryKey($value, $useConnection = 'read')
+    public function getByPrimaryKey($value)
     {
-        return $this->getById($value, $useConnection);
+        return $this->getById($value);
     }
 
 
     /**
-    * @param $value
-    * @param string $useConnection Connection type to use.
-    * @throws StoreException
-    * @return Submission
-    */
-    public function getById($value, $useConnection = 'read')
+     * Get a Submission object by Id.
+     * @param $value
+     * @return Submission|null
+     */
+    public function getById(int $value)
     {
-        if (is_null($value)) {
-            throw new StoreException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
-        }
         // This is the primary key, so try and get from cache:
-        $cacheResult = $this->getFromCache($value);
+        $cacheResult = $this->cacheGet($value);
 
         if (!empty($cacheResult)) {
             return $cacheResult;
         }
 
+        $rtn = $this->where('id', $value)->first();
+        $this->cacheSet($value, $rtn);
 
-        $query = new Query($this->getNamespace('Submission').'\Model\Submission', $useConnection);
-        $query->select('*')->from('submission')->limit(1);
-        $query->where('`id` = :id');
-        $query->bind(':id', $value);
-
-        try {
-            $query->execute();
-            $result = $query->fetch();
-
-            $this->setCache($value, $result);
-
-            return $result;
-        } catch (PDOException $ex) {
-            throw new StoreException('Could not get Submission by Id', 0, $ex);
-        }
+        return $rtn;
     }
 
     /**
-     * @param $value
-     * @param array $options Offsets, limits, etc.
-     * @param string $useConnection Connection type to use.
-     * @throws StoreException
+     * Get all Submission objects by FormId.
+     * @return \Octo\Forms\Model\SubmissionCollection
+     */
+    public function getByFormId($value, $limit = null)
+    {
+        return $this->where('form_id', $value)->get($limit);
+    }
+
+    /**
+     * Gets the total number of Submission by FormId value.
      * @return int
      */
-    public function getTotalForFormId($value, $options = [], $useConnection = 'read')
+    public function getTotalByFormId($value) : int
     {
-        if (is_null($value)) {
-            throw new StoreException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
-        }
-
-        $query = new Query($this->getNamespace('Submission').'\Model\Submission', $useConnection);
-        $query->from('submission')->where('`form_id` = :form_id');
-        $query->bind(':form_id', $value);
-
-        $this->handleQueryOptions($query, $options);
-
-        try {
-            return $query->getCount();
-        } catch (PDOException $ex) {
-            throw new StoreException('Could not get count of Submission by FormId', 0, $ex);
-        }
+        return $this->where('form_id', $value)->count();
     }
 
     /**
-     * @param $value
-     * @param array $options Limits, offsets, etc.
-     * @param string $useConnection Connection type to use.
-     * @throws StoreException
-     * @return SubmissionCollection
+     * Get all Submission objects by ContactId.
+     * @return \Octo\Forms\Model\SubmissionCollection
      */
-    public function getByFormId($value, $options = [], $useConnection = 'read')
+    public function getByContactId($value, $limit = null)
     {
-        if (is_null($value)) {
-            throw new StoreException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
-        }
-
-        $query = new Query($this->getNamespace('Submission').'\Model\Submission', $useConnection);
-        $query->from('submission')->where('`form_id` = :form_id');
-        $query->bind(':form_id', $value);
-
-        $this->handleQueryOptions($query, $options);
-
-        try {
-            $query->execute();
-            return new SubmissionCollection($query->fetchAll());
-        } catch (PDOException $ex) {
-            throw new StoreException('Could not get Submission by FormId', 0, $ex);
-        }
-
+        return $this->where('contact_id', $value)->get($limit);
     }
 
     /**
-     * @param $value
-     * @param array $options Offsets, limits, etc.
-     * @param string $useConnection Connection type to use.
-     * @throws StoreException
+     * Gets the total number of Submission by ContactId value.
      * @return int
      */
-    public function getTotalForContactId($value, $options = [], $useConnection = 'read')
+    public function getTotalByContactId($value) : int
     {
-        if (is_null($value)) {
-            throw new StoreException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
-        }
-
-        $query = new Query($this->getNamespace('Submission').'\Model\Submission', $useConnection);
-        $query->from('submission')->where('`contact_id` = :contact_id');
-        $query->bind(':contact_id', $value);
-
-        $this->handleQueryOptions($query, $options);
-
-        try {
-            return $query->getCount();
-        } catch (PDOException $ex) {
-            throw new StoreException('Could not get count of Submission by ContactId', 0, $ex);
-        }
-    }
-
-    /**
-     * @param $value
-     * @param array $options Limits, offsets, etc.
-     * @param string $useConnection Connection type to use.
-     * @throws StoreException
-     * @return SubmissionCollection
-     */
-    public function getByContactId($value, $options = [], $useConnection = 'read')
-    {
-        if (is_null($value)) {
-            throw new StoreException('Value passed to ' . __FUNCTION__ . ' cannot be null.');
-        }
-
-        $query = new Query($this->getNamespace('Submission').'\Model\Submission', $useConnection);
-        $query->from('submission')->where('`contact_id` = :contact_id');
-        $query->bind(':contact_id', $value);
-
-        $this->handleQueryOptions($query, $options);
-
-        try {
-            $query->execute();
-            return new SubmissionCollection($query->fetchAll());
-        } catch (PDOException $ex) {
-            throw new StoreException('Could not get Submission by ContactId', 0, $ex);
-        }
-
+        return $this->where('contact_id', $value)->count();
     }
 }
