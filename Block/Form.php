@@ -245,7 +245,10 @@ class Form extends Block
 
         if (isset($config->site['smtp_server'])) {
             $mail->IsSMTP();
-            $mail->Host = $config->site['smtp_server'];
+            $mail->SMTPAuth = true;
+            $mail->Host = $config->get('site.smtp_server', null);
+            $mail->Username = $config->get('site.smtp_username', null);
+            $mail->Password = $config->get('site.smtp_password', null);
         }
 
         $mail->IsHTML(true);
