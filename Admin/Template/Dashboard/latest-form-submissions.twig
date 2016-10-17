@@ -17,10 +17,10 @@
 
                 {% for submission in latestSubmissions %}
                 <tr>
-                    <td>{{ value.Contact.email }}</td>
+                    <td>{{ submission.Contact.email }}</td>
                     <td>
                         {% if user.canAccess("/form/submission") %}
-                        <a class="btn btn-default btn-sm" href="{{ adminUri }}/form/submission/{{ value.id }}">View</a>
+                        <a class="btn btn-default btn-sm" href="{{ adminUri }}/form/submission/{{ submission.id }}">View</a>
                         {% endif %}
                     </td>
                 </tr>
