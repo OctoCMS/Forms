@@ -19,7 +19,7 @@ class DashboardWidget extends Listener
     public function getStatistics(&$stats)
     {
         $submissionStore = Store::get('Submission');
-        $total = $submissionStore->getTotal();
+        $total = $submissionStore->find()->count();
 
         if ($total) {
             $stats[] = [
@@ -30,7 +30,6 @@ class DashboardWidget extends Listener
                 'link' => '/form',
             ];
         }
-
     }
 
     public function getWidget(&$widgets)
@@ -38,7 +37,7 @@ class DashboardWidget extends Listener
         $submissionStore = Store::get('Submission');
 
         $view = new Template("Dashboard/latest-form-submissions", "admin");
-        $view->latestSubmissions = $submissionStore->getAll(0, 5);
+        $view->latestSubmissions = $submissionStore->find()->order('id', 'DESC')->get(5);
 
         $widgets[] = ['order' => 10, 'html' => $view->render()];
     }

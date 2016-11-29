@@ -1,7 +1,6 @@
 <?php
 namespace Octo\Forms\Admin\Controller;
 
-use b8\Http\Response\RedirectResponse;
 use Octo\Admin\Controller;
 use Octo\Admin\Menu;
 use Octo\Forms\Model\Form;
@@ -66,7 +65,7 @@ class FormController extends Controller
                 $rtn[$form->getId()] = $form->getTitle();
             }
 
-            die(json_encode($rtn));
+            return $this->json($rtn);
         }
 
         $this->view->forms = $forms;
@@ -82,8 +81,7 @@ class FormController extends Controller
             $form->setValues($this->getParams());
             $this->formStore->save($form);
 
-            $this->successMessage('Form saved successfully!', true);
-            $this->redirect('/form');
+            return $this->redirect('/form')->success('Form saved successfully.');
         }
     }
 
@@ -98,8 +96,7 @@ class FormController extends Controller
             $form->setValues($this->getParams());
             $this->formStore->save($form);
 
-            $this->successMessage('Form saved successfully!', true);
-            $this->redirect('/form');
+            return $this->redirect('/form')->success('Form saved successfully.');
         }
 
         $form = [
@@ -171,7 +168,6 @@ class FormController extends Controller
         $form = $this->formStore->getById($formId);
         $this->formStore->delete($form);
 
-        $this->successMessage($form->getTitle() . ' has been deleted.', true);
-        $this->redirect('/form');
+        return $this->redirect('/form')->success($form->getTitle() . ' has been deleted.');
     }
 }

@@ -1,5 +1,4 @@
-{% if user.canAccess("/form") and latestSubmissions|length > 0 %}
-<div class="col-sm-6 block">
+{% if user.canAccess("/form") and latestSubmissions.count > 0 %}
     <div class="box box-success">
         <div class="box-header">
             <h3 class="box-title">Latest Form Submissions</h3>
@@ -29,5 +28,4 @@
             </table>
         </div>
     </div>
-</div>
 {% endif %}
