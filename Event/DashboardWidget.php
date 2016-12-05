@@ -25,7 +25,7 @@ class DashboardWidget extends Listener
             $stats[] = [
                 'title' => 'Form Submissions',
                 'count' => number_format($total),
-                'icon' => 'email',
+                'icon' => 'envelope-open-o',
                 'color' => 'green',
                 'link' => '/form',
             ];
