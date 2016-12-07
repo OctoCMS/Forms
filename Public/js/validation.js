@@ -4,7 +4,6 @@ if ($) {
             var thisForm = $(this);
 
             if (thisForm.data('validation') == 'on') {
-
                 thisForm.find('input[title]').tooltip({
                     placement: 'bottom',
                     trigger: 'focus'
@@ -15,6 +14,10 @@ if ($) {
                 thisForm.on('submit', function (e) {
                     var valid = true;
                     var warnings = [];
+
+                    if (thisForm.hasClass('octo-forms-form')) {
+                        e.preventDefault();
+                    }
 
                     thisForm.find('input[required]').filter(':not(.custom-validator)').each(function () {
                         validationReset($(this));
@@ -63,12 +66,52 @@ if ($) {
                     }
 
                     if (valid) {
-                        $(thisForm).trigger('validated-submit');
+                        $(thisForm).trigger('validated.octo');
                     }
 
                     return valid;
                 });
             }
+        });
+
+
+
+        $('form.octo-forms-form').on('validated.octo', function () {
+            var $form = $(this);
+            var $error = $form.find('.octo-form-error');
+            var $success = $form.find('.octo-form-success');
+            var $btn = $form.find('button[type="submit"]');
+
+            $success.hide();
+            $error.hide();
+            
+            $btn.text('Submitting...');
+            
+            $.post('/form/submit', $(this).serialize()).always(function (data) {
+                if (typeof data != "object") {
+                    data = {
+                        success: false,
+                        message: "There was a problem submitting the form. Please try again."
+                    };
+                }
+
+                if (data.success) {
+                    $success.html(data.message);
+                    $success.slideDown();
+                    $btn.text('Submitted!');
+                    return;
+                }
+
+                $error.html(data.message);
+                $error.slideDown();
+                $btn.text('Submit');
+
+                if (data.fields) {
+                    for (var i in data.fields) {
+                        $form.find('.input-' + data.fields[i]).addClass('error');
+                    }
+                }
+            });
         });
     });
 }
@@ -76,23 +119,18 @@ if ($) {
 function validationReset(field) {
     field.removeClass('valid');
     field.removeClass('invalid');
-    field.find('~ .fa-check').remove();
+    field.trigger('reset.octo');
 }
 
 function validationFailed(field) {
     field.addClass('invalid');
+    field.trigger('invalid.octo');
 
-    if (field.attr('type') != 'checkbox') {
-        field.after($('<i class="fa fa-check"></i>'));
-    }
 }
 
 function validationSuccess(field) {
     field.addClass('valid');
-
-    if (field.attr('type') != 'checkbox') {
-        field.after($('<i class="fa fa-check"></i>'));
-    }
+    field.trigger('valid.octo');
 }
 
 
