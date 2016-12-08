@@ -49,7 +49,7 @@
                 Message
             </td>
             <td style="vertical-align: top; font-family: Tahoma, arial, sans-serif; padding: 5px">
-                {{ submission.message }}
+                {{ submission.message|raw }}
             </td>
         </tr>
         {% endif %}

@@ -139,7 +139,7 @@ class FormController extends Controller
         $submission->setContact($contact);
 
         if (array_key_exists('message', $values)) {
-            $submission->setMessage(nl2br($values['message']));
+            $submission->setMessage(nl2br(strip_tags($values['message'])));
             unset($values['message']);
         }
 
