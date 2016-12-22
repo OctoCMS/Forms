@@ -7,13 +7,15 @@
 namespace Octo\Forms\Model\Base;
 
 use DateTime;
+use Block8\Database\Query;
 use Octo\Model;
 use Octo\Store;
+use Octo\Forms\Model\Submission;
 
 /**
  * Submission Base Model
  */
-class SubmissionBase extends Model
+abstract class SubmissionBase extends Model
 {
     protected function init()
     {
@@ -62,7 +64,7 @@ class SubmissionBase extends Model
      * @return int
      */
 
-     public function getId()
+     public function getId() : int
      {
         $rtn = $this->data['id'];
 
@@ -74,7 +76,7 @@ class SubmissionBase extends Model
      * @return int
      */
 
-     public function getFormId()
+     public function getFormId() : int
      {
         $rtn = $this->data['form_id'];
 
@@ -86,12 +88,12 @@ class SubmissionBase extends Model
      * @return DateTime
      */
 
-     public function getCreatedDate()
+     public function getCreatedDate() : DateTime
      {
         $rtn = $this->data['created_date'];
 
         if (!empty($rtn)) {
-            $rtn = new \DateTime($rtn);
+            $rtn = new DateTime($rtn);
         }
 
         return $rtn;
@@ -102,7 +104,7 @@ class SubmissionBase extends Model
      * @return int
      */
 
-     public function getContactId()
+     public function getContactId() : int
      {
         $rtn = $this->data['contact_id'];
 
@@ -111,10 +113,10 @@ class SubmissionBase extends Model
     
     /**
      * Get the value of Extra / extra
-     * @return array|null
+     * @return array
      */
 
-     public function getExtra()
+     public function getExtra() : ?array
      {
         $rtn = $this->data['extra'];
 
@@ -132,7 +134,7 @@ class SubmissionBase extends Model
      * @return string
      */
 
-     public function getMessage()
+     public function getMessage() : ?string
      {
         $rtn = $this->data['message'];
 
@@ -143,115 +145,111 @@ class SubmissionBase extends Model
     /**
      * Set the value of Id / id
      * @param $value int
+     * @return Submission
      */
-    public function setId(int $value)
+    public function setId(int $value) : Submission
     {
 
-        $this->validateNotNull('Id', $value);
-
-        if ($this->data['id'] === $value) {
-            return;
+        if ($this->data['id'] !== $value) {
+            $this->data['id'] = $value;
+            $this->setModified('id');
         }
 
-        $this->data['id'] = $value;
-        $this->setModified('id');
+        return $this;
     }
     
     /**
      * Set the value of FormId / form_id
      * @param $value int
+     * @return Submission
      */
-    public function setFormId(int $value)
+    public function setFormId(int $value) : Submission
     {
-
 
         // As this column is a foreign key, empty values should be considered null.
         if (empty($value)) {
             $value = null;
         }
 
-        $this->validateNotNull('FormId', $value);
 
-        if ($this->data['form_id'] === $value) {
-            return;
+        if ($this->data['form_id'] !== $value) {
+            $this->data['form_id'] = $value;
+            $this->setModified('form_id');
         }
 
-        $this->data['form_id'] = $value;
-        $this->setModified('form_id');
+        return $this;
     }
     
     /**
      * Set the value of CreatedDate / created_date
      * @param $value DateTime
+     * @return Submission
      */
-    public function setCreatedDate($value)
+    public function setCreatedDate($value) : Submission
     {
         $this->validateDate('CreatedDate', $value);
-        $this->validateNotNull('CreatedDate', $value);
 
-        if ($this->data['created_date'] === $value) {
-            return;
+        if ($this->data['created_date'] !== $value) {
+            $this->data['created_date'] = $value;
+            $this->setModified('created_date');
         }
 
-        $this->data['created_date'] = $value;
-        $this->setModified('created_date');
+        return $this;
     }
     
     /**
      * Set the value of ContactId / contact_id
      * @param $value int
+     * @return Submission
      */
-    public function setContactId(int $value)
+    public function setContactId(int $value) : Submission
     {
-
 
         // As this column is a foreign key, empty values should be considered null.
         if (empty($value)) {
             $value = null;
         }
 
-        $this->validateNotNull('ContactId', $value);
 
-        if ($this->data['contact_id'] === $value) {
-            return;
+        if ($this->data['contact_id'] !== $value) {
+            $this->data['contact_id'] = $value;
+            $this->setModified('contact_id');
         }
 
-        $this->data['contact_id'] = $value;
-        $this->setModified('contact_id');
+        return $this;
     }
     
     /**
      * Set the value of Extra / extra
-     * @param $value array|null
+     * @param $value array
+     * @return Submission
      */
-    public function setExtra($value)
+    public function setExtra($value) : Submission
     {
         $this->validateJson($value);
-        $this->validateNotNull('Extra', $value);
 
-        if ($this->data['extra'] === $value) {
-            return;
+        if ($this->data['extra'] !== $value) {
+            $this->data['extra'] = $value;
+            $this->setModified('extra');
         }
 
-        $this->data['extra'] = $value;
-        $this->setModified('extra');
+        return $this;
     }
     
     /**
      * Set the value of Message / message
      * @param $value string
+     * @return Submission
      */
-    public function setMessage($value)
+    public function setMessage(?string $value) : Submission
     {
 
-
-
-        if ($this->data['message'] === $value) {
-            return;
+        if ($this->data['message'] !== $value) {
+            $this->data['message'] = $value;
+            $this->setModified('message');
         }
 
-        $this->data['message'] = $value;
-        $this->setModified('message');
+        return $this;
     }
     
     
@@ -362,4 +360,5 @@ class SubmissionBase extends Model
     {
         return $this->setFormId($value->getId());
     }
+
 }

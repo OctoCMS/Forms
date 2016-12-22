@@ -7,13 +7,15 @@
 namespace Octo\Forms\Model\Base;
 
 use DateTime;
+use Block8\Database\Query;
 use Octo\Model;
 use Octo\Store;
+use Octo\Forms\Model\Form;
 
 /**
  * Form Base Model
  */
-class FormBase extends Model
+abstract class FormBase extends Model
 {
     protected function init()
     {
@@ -52,7 +54,7 @@ class FormBase extends Model
      * @return int
      */
 
-     public function getId()
+     public function getId() : int
      {
         $rtn = $this->data['id'];
 
@@ -64,7 +66,7 @@ class FormBase extends Model
      * @return string
      */
 
-     public function getTitle()
+     public function getTitle() : string
      {
         $rtn = $this->data['title'];
 
@@ -76,7 +78,7 @@ class FormBase extends Model
      * @return string
      */
 
-     public function getRecipients()
+     public function getRecipients() : ?string
      {
         $rtn = $this->data['recipients'];
 
@@ -85,10 +87,10 @@ class FormBase extends Model
     
     /**
      * Get the value of Definition / definition
-     * @return array|null
+     * @return array
      */
 
-     public function getDefinition()
+     public function getDefinition() : ?array
      {
         $rtn = $this->data['definition'];
 
@@ -106,7 +108,7 @@ class FormBase extends Model
      * @return string
      */
 
-     public function getThankyouMessage()
+     public function getThankyouMessage() : ?string
      {
         $rtn = $this->data['thankyou_message'];
 
@@ -117,90 +119,87 @@ class FormBase extends Model
     /**
      * Set the value of Id / id
      * @param $value int
+     * @return Form
      */
-    public function setId(int $value)
+    public function setId(int $value) : Form
     {
 
-        $this->validateNotNull('Id', $value);
-
-        if ($this->data['id'] === $value) {
-            return;
+        if ($this->data['id'] !== $value) {
+            $this->data['id'] = $value;
+            $this->setModified('id');
         }
 
-        $this->data['id'] = $value;
-        $this->setModified('id');
+        return $this;
     }
     
     /**
      * Set the value of Title / title
      * @param $value string
+     * @return Form
      */
-    public function setTitle(string $value)
+    public function setTitle(string $value) : Form
     {
 
-        $this->validateNotNull('Title', $value);
-
-        if ($this->data['title'] === $value) {
-            return;
+        if ($this->data['title'] !== $value) {
+            $this->data['title'] = $value;
+            $this->setModified('title');
         }
 
-        $this->data['title'] = $value;
-        $this->setModified('title');
+        return $this;
     }
     
     /**
      * Set the value of Recipients / recipients
      * @param $value string
+     * @return Form
      */
-    public function setRecipients($value)
+    public function setRecipients(?string $value) : Form
     {
 
-
-
-        if ($this->data['recipients'] === $value) {
-            return;
+        if ($this->data['recipients'] !== $value) {
+            $this->data['recipients'] = $value;
+            $this->setModified('recipients');
         }
 
-        $this->data['recipients'] = $value;
-        $this->setModified('recipients');
+        return $this;
     }
     
     /**
      * Set the value of Definition / definition
-     * @param $value array|null
+     * @param $value array
+     * @return Form
      */
-    public function setDefinition($value)
+    public function setDefinition($value) : Form
     {
         $this->validateJson($value);
-        $this->validateNotNull('Definition', $value);
 
-        if ($this->data['definition'] === $value) {
-            return;
+        if ($this->data['definition'] !== $value) {
+            $this->data['definition'] = $value;
+            $this->setModified('definition');
         }
 
-        $this->data['definition'] = $value;
-        $this->setModified('definition');
+        return $this;
     }
     
     /**
      * Set the value of ThankyouMessage / thankyou_message
      * @param $value string
+     * @return Form
      */
-    public function setThankyouMessage($value)
+    public function setThankyouMessage(?string $value) : Form
     {
 
-
-
-        if ($this->data['thankyou_message'] === $value) {
-            return;
+        if ($this->data['thankyou_message'] !== $value) {
+            $this->data['thankyou_message'] = $value;
+            $this->setModified('thankyou_message');
         }
 
-        $this->data['thankyou_message'] = $value;
-        $this->setModified('thankyou_message');
+        return $this;
     }
     
     
-    public function Submissions()
+
+    public function Submissions() : Query
     {
         return Store::get('Submission')->where('form_id', $this->data['id']);
     }
