@@ -7,18 +7,41 @@
 
 namespace Octo\Forms\Store\Base;
 
+use Block8\Database\Connection;
 use Octo\Store;
 use Octo\Forms\Model\Submission;
 use Octo\Forms\Model\SubmissionCollection;
+use Octo\Forms\Store\SubmissionStore;
 
 /**
  * Submission Base Store
  */
 class SubmissionStoreBase extends Store
 {
+    /** @var SubmissionStore $instance */
+    protected static $instance = null;
+
+    /** @var string */
     protected $table = 'submission';
+
+    /** @var string */
     protected $model = 'Octo\Forms\Model\Submission';
+
+    /** @var string */
     protected $key = 'id';
+
+    /**
+     * Return the database store for this model.
+     * @return SubmissionStore
+     */
+    public static function load() : SubmissionStore
+    {
+        if (is_null(self::$instance)) {
+            self::$instance = new SubmissionStore(Connection::get());
+        }
+
+        return self::$instance;
+    }
 
     /**
     * @param $value

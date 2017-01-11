@@ -11,44 +11,80 @@ use Block8\Database\Query;
 use Octo\Model;
 use Octo\Store;
 use Octo\Forms\Model\Form;
+use Octo\Forms\Store\FormStore;
 
 /**
  * Form Base Model
  */
 abstract class FormBase extends Model
 {
-    protected function init()
-    {
-        $this->table = 'form';
-        $this->model = 'Form';
+    protected $table = 'form';
+    protected $model = 'Form';
+    protected $data = [
+        'id' => null,
+        'title' => null,
+        'recipients' => null,
+        'definition' => null,
+        'thankyou_message' => null,
+    ];
 
-        // Columns:
-        
-        $this->data['id'] = null;
-        $this->getters['id'] = 'getId';
-        $this->setters['id'] = 'setId';
-        
-        $this->data['title'] = null;
-        $this->getters['title'] = 'getTitle';
-        $this->setters['title'] = 'setTitle';
-        
-        $this->data['recipients'] = null;
-        $this->getters['recipients'] = 'getRecipients';
-        $this->setters['recipients'] = 'setRecipients';
-        
-        $this->data['definition'] = null;
-        $this->getters['definition'] = 'getDefinition';
-        $this->setters['definition'] = 'setDefinition';
-        
-        $this->data['thankyou_message'] = null;
-        $this->getters['thankyou_message'] = 'getThankyouMessage';
-        $this->setters['thankyou_message'] = 'setThankyouMessage';
-        
-        // Foreign keys:
-        
+    protected $getters = [
+        'id' => 'getId',
+        'title' => 'getTitle',
+        'recipients' => 'getRecipients',
+        'definition' => 'getDefinition',
+        'thankyou_message' => 'getThankyouMessage',
+    ];
+
+    protected $setters = [
+        'id' => 'setId',
+        'title' => 'setTitle',
+        'recipients' => 'setRecipients',
+        'definition' => 'setDefinition',
+        'thankyou_message' => 'setThankyouMessage',
+    ];
+
+    /**
+     * Return the database store for this model.
+     * @return FormStore
+     */
+    public static function Store() : FormStore
+    {
+        return FormStore::load();
     }
 
-    
+    /**
+     * Get Form by primary key: id
+     * @param int $id
+     * @return Form|null
+     */
+    public static function get(int $id) : ?Form
+    {
+        return self::Store()->getById($id);
+    }
+
+    /**
+     * @throws \Exception
+     * @return Form
+     */
+    public function save() : Form
+    {
+        $rtn = self::Store()->save($this);
+
+        if (empty($rtn)) {
+            throw new \Exception('Failed to save Form');
+        }
+
+        if (!($rtn instanceof Form)) {
+            throw new \Exception('Unexpected ' . get_class($rtn) . ' received from save.');
+        }
+
+        $this->data = $rtn->toArray();
+
+        return $this;
+    }
+
+
     /**
      * Get the value of Id / id
      * @return int

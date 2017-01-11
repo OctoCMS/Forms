@@ -11,54 +11,87 @@ use Block8\Database\Query;
 use Octo\Model;
 use Octo\Store;
 use Octo\Forms\Model\Submission;
+use Octo\Forms\Store\SubmissionStore;
 
 /**
  * Submission Base Model
  */
 abstract class SubmissionBase extends Model
 {
-    protected function init()
-    {
-        $this->table = 'submission';
-        $this->model = 'Submission';
+    protected $table = 'submission';
+    protected $model = 'Submission';
+    protected $data = [
+        'id' => null,
+        'form_id' => null,
+        'created_date' => null,
+        'contact_id' => null,
+        'extra' => null,
+        'message' => null,
+    ];
 
-        // Columns:
-        
-        $this->data['id'] = null;
-        $this->getters['id'] = 'getId';
-        $this->setters['id'] = 'setId';
-        
-        $this->data['form_id'] = null;
-        $this->getters['form_id'] = 'getFormId';
-        $this->setters['form_id'] = 'setFormId';
-        
-        $this->data['created_date'] = null;
-        $this->getters['created_date'] = 'getCreatedDate';
-        $this->setters['created_date'] = 'setCreatedDate';
-        
-        $this->data['contact_id'] = null;
-        $this->getters['contact_id'] = 'getContactId';
-        $this->setters['contact_id'] = 'setContactId';
-        
-        $this->data['extra'] = null;
-        $this->getters['extra'] = 'getExtra';
-        $this->setters['extra'] = 'setExtra';
-        
-        $this->data['message'] = null;
-        $this->getters['message'] = 'getMessage';
-        $this->setters['message'] = 'setMessage';
-        
-        // Foreign keys:
-        
-        $this->getters['Contact'] = 'getContact';
-        $this->setters['Contact'] = 'setContact';
-        
-        $this->getters['Form'] = 'getForm';
-        $this->setters['Form'] = 'setForm';
-        
+    protected $getters = [
+        'id' => 'getId',
+        'form_id' => 'getFormId',
+        'created_date' => 'getCreatedDate',
+        'contact_id' => 'getContactId',
+        'extra' => 'getExtra',
+        'message' => 'getMessage',
+        'Contact' => 'getContact',
+        'Form' => 'getForm',
+    ];
+
+    protected $setters = [
+        'id' => 'setId',
+        'form_id' => 'setFormId',
+        'created_date' => 'setCreatedDate',
+        'contact_id' => 'setContactId',
+        'extra' => 'setExtra',
+        'message' => 'setMessage',
+        'Contact' => 'setContact',
+        'Form' => 'setForm',
+    ];
+
+    /**
+     * Return the database store for this model.
+     * @return SubmissionStore
+     */
+    public static function Store() : SubmissionStore
+    {
+        return SubmissionStore::load();
     }
 
-    
+    /**
+     * Get Submission by primary key: id
+     * @param int $id
+     * @return Submission|null
+     */
+    public static function get(int $id) : ?Submission
+    {
+        return self::Store()->getById($id);
+    }
+
+    /**
+     * @throws \Exception
+     * @return Submission
+     */
+    public function save() : Submission
+    {
+        $rtn = self::Store()->save($this);
+
+        if (empty($rtn)) {
+            throw new \Exception('Failed to save Submission');
+        }
+
+        if (!($rtn instanceof Submission)) {
+            throw new \Exception('Unexpected ' . get_class($rtn) . ' received from save.');
+        }
+
+        $this->data = $rtn->toArray();
+
+        return $this;
+    }
+
+
     /**
      * Get the value of Id / id
      * @return int

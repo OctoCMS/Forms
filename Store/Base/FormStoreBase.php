@@ -7,18 +7,41 @@
 
 namespace Octo\Forms\Store\Base;
 
+use Block8\Database\Connection;
 use Octo\Store;
 use Octo\Forms\Model\Form;
 use Octo\Forms\Model\FormCollection;
+use Octo\Forms\Store\FormStore;
 
 /**
  * Form Base Store
  */
 class FormStoreBase extends Store
 {
+    /** @var FormStore $instance */
+    protected static $instance = null;
+
+    /** @var string */
     protected $table = 'form';
+
+    /** @var string */
     protected $model = 'Octo\Forms\Model\Form';
+
+    /** @var string */
     protected $key = 'id';
+
+    /**
+     * Return the database store for this model.
+     * @return FormStore
+     */
+    public static function load() : FormStore
+    {
+        if (is_null(self::$instance)) {
+            self::$instance = new FormStore(Connection::get());
+        }
+
+        return self::$instance;
+    }
 
     /**
     * @param $value
