@@ -119,17 +119,22 @@ if ($) {
 function validationReset(field) {
     field.removeClass('valid');
     field.removeClass('invalid');
+
+    field.parents('.form-group').removeClass('has-success');
+    field.parents('.form-group').removeClass('has-danger');
+
     field.trigger('reset.octo');
 }
 
 function validationFailed(field) {
     field.addClass('invalid');
+    field.parents('.form-group').addClass('has-danger');
     field.trigger('invalid.octo');
-
 }
 
 function validationSuccess(field) {
     field.addClass('valid');
+    field.parents('.form-group').addClass('has-success');
     field.trigger('valid.octo');
 }
 
@@ -338,6 +343,9 @@ $(document).ready(function () {
 
                 var expiry = ccExpiry.payment('cardExpiryVal');
                 var result = $.payment.validateCardExpiry(expiry["month"], expiry["year"]);
+
+                $(this).data('month', expiry["month"]);
+                $(this).data('year', expiry["year"]);
 
                 if (result) {
                     validationSuccess(ccExpiry);

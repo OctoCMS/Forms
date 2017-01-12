@@ -89,7 +89,6 @@ abstract class FormBase extends Model
      * Get the value of Id / id
      * @return int
      */
-
      public function getId() : int
      {
         $rtn = $this->data['id'];
@@ -101,7 +100,6 @@ abstract class FormBase extends Model
      * Get the value of Title / title
      * @return string
      */
-
      public function getTitle() : string
      {
         $rtn = $this->data['title'];
@@ -113,7 +111,6 @@ abstract class FormBase extends Model
      * Get the value of Recipients / recipients
      * @return string
      */
-
      public function getRecipients() : ?string
      {
         $rtn = $this->data['recipients'];
@@ -125,7 +122,6 @@ abstract class FormBase extends Model
      * Get the value of Definition / definition
      * @return array
      */
-
      public function getDefinition() : ?array
      {
         $rtn = $this->data['definition'];
@@ -143,7 +139,6 @@ abstract class FormBase extends Model
      * Get the value of ThankyouMessage / thankyou_message
      * @return string
      */
-
      public function getThankyouMessage() : ?string
      {
         $rtn = $this->data['thankyou_message'];
@@ -233,10 +228,4 @@ abstract class FormBase extends Model
         return $this;
     }
     
-    
-
-    public function Submissions() : Query
-    {
-        return Store::get('Submission')->where('form_id', $this->data['id']);
-    }
 }

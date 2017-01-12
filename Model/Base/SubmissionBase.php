@@ -12,6 +12,8 @@ use Octo\Model;
 use Octo\Store;
 use Octo\Forms\Model\Submission;
 use Octo\Forms\Store\SubmissionStore;
+use Octo\Forms\Model\Form;
+use Octo\System\Model\Contact;
 
 /**
  * Submission Base Model
@@ -36,8 +38,8 @@ abstract class SubmissionBase extends Model
         'contact_id' => 'getContactId',
         'extra' => 'getExtra',
         'message' => 'getMessage',
-        'Contact' => 'getContact',
         'Form' => 'getForm',
+        'Contact' => 'getContact',
     ];
 
     protected $setters = [
@@ -47,8 +49,8 @@ abstract class SubmissionBase extends Model
         'contact_id' => 'setContactId',
         'extra' => 'setExtra',
         'message' => 'setMessage',
-        'Contact' => 'setContact',
         'Form' => 'setForm',
+        'Contact' => 'setContact',
     ];
 
     /**
@@ -96,7 +98,6 @@ abstract class SubmissionBase extends Model
      * Get the value of Id / id
      * @return int
      */
-
      public function getId() : int
      {
         $rtn = $this->data['id'];
@@ -108,7 +109,6 @@ abstract class SubmissionBase extends Model
      * Get the value of FormId / form_id
      * @return int
      */
-
      public function getFormId() : int
      {
         $rtn = $this->data['form_id'];
@@ -120,7 +120,6 @@ abstract class SubmissionBase extends Model
      * Get the value of CreatedDate / created_date
      * @return DateTime
      */
-
      public function getCreatedDate() : DateTime
      {
         $rtn = $this->data['created_date'];
@@ -136,7 +135,6 @@ abstract class SubmissionBase extends Model
      * Get the value of ContactId / contact_id
      * @return int
      */
-
      public function getContactId() : int
      {
         $rtn = $this->data['contact_id'];
@@ -148,7 +146,6 @@ abstract class SubmissionBase extends Model
      * Get the value of Extra / extra
      * @return array
      */
-
      public function getExtra() : ?array
      {
         $rtn = $this->data['extra'];
@@ -166,7 +163,6 @@ abstract class SubmissionBase extends Model
      * Get the value of Message / message
      * @return string
      */
-
      public function getMessage() : ?string
      {
         $rtn = $this->data['message'];
@@ -285,69 +281,15 @@ abstract class SubmissionBase extends Model
         return $this;
     }
     
-    
-    /**
-     * Get the Contact model for this  by Id.
-     *
-     * @uses \Octo\System\Store\ContactStore::getById()
-     * @uses \Octo\System\Model\Contact
-     * @return \Octo\System\Model\Contact
-     */
-    public function getContact()
-    {
-        $key = $this->getContactId();
-
-        if (empty($key)) {
-           return null;
-        }
-
-        return Store::get('Contact')->getById($key);
-    }
-
-    /**
-     * Set Contact - Accepts an ID, an array representing a Contact or a Contact model.
-     * @throws \Exception
-     * @param $value mixed
-     */
-    public function setContact($value)
-    {
-        // Is this a scalar value representing the ID of this foreign key?
-        if (is_scalar($value)) {
-            return $this->setContactId($value);
-        }
-
-        // Is this an instance of Contact?
-        if (is_object($value) && $value instanceof \Octo\System\Model\Contact) {
-            return $this->setContactObject($value);
-        }
-
-        // Is this an array representing a Contact item?
-        if (is_array($value) && !empty($value['id'])) {
-            return $this->setContactId($value['id']);
-        }
-
-        // None of the above? That's a problem!
-        throw new \Exception('Invalid value for Contact.');
-    }
-
-    /**
-     * Set Contact - Accepts a Contact model.
-     *
-     * @param $value \Octo\System\Model\Contact
-     */
-    public function setContactObject(\Octo\System\Model\Contact $value)
-    {
-        return $this->setContactId($value->getId());
-    }
 
     /**
      * Get the Form model for this  by Id.
      *
      * @uses \Octo\Forms\Store\FormStore::getById()
-     * @uses \Octo\Forms\Model\Form
-     * @return \Octo\Forms\Model\Form
+     * @uses Form
+     * @return Form|null
      */
-    public function getForm()
+    public function getForm() : ?Form
     {
         $key = $this->getFormId();
 
@@ -355,15 +297,16 @@ abstract class SubmissionBase extends Model
            return null;
         }
 
-        return Store::get('Form')->getById($key);
+        return Form::Store()->getById($key);
     }
 
     /**
      * Set Form - Accepts an ID, an array representing a Form or a Form model.
      * @throws \Exception
      * @param $value mixed
+     * @return Submission
      */
-    public function setForm($value)
+    public function setForm($value) : Submission
     {
         // Is this a scalar value representing the ID of this foreign key?
         if (is_scalar($value)) {
@@ -371,7 +314,7 @@ abstract class SubmissionBase extends Model
         }
 
         // Is this an instance of Form?
-        if (is_object($value) && $value instanceof \Octo\Forms\Model\Form) {
+        if (is_object($value) && $value instanceof Form) {
             return $this->setFormObject($value);
         }
 
@@ -387,11 +330,67 @@ abstract class SubmissionBase extends Model
     /**
      * Set Form - Accepts a Form model.
      *
-     * @param $value \Octo\Forms\Model\Form
+     * @param $value Form
+     * @return Submission
      */
-    public function setFormObject(\Octo\Forms\Model\Form $value)
+    public function setFormObject(Form $value) : Submission
     {
         return $this->setFormId($value->getId());
     }
 
+    /**
+     * Get the Contact model for this  by Id.
+     *
+     * @uses \Octo\System\Store\ContactStore::getById()
+     * @uses Contact
+     * @return Contact|null
+     */
+    public function getContact() : ?Contact
+    {
+        $key = $this->getContactId();
+
+        if (empty($key)) {
+           return null;
+        }
+
+        return Contact::Store()->getById($key);
+    }
+
+    /**
+     * Set Contact - Accepts an ID, an array representing a Contact or a Contact model.
+     * @throws \Exception
+     * @param $value mixed
+     * @return Submission
+     */
+    public function setContact($value) : Submission
+    {
+        // Is this a scalar value representing the ID of this foreign key?
+        if (is_scalar($value)) {
+            return $this->setContactId($value);
+        }
+
+        // Is this an instance of Contact?
+        if (is_object($value) && $value instanceof Contact) {
+            return $this->setContactObject($value);
+        }
+
+        // Is this an array representing a Contact item?
+        if (is_array($value) && !empty($value['id'])) {
+            return $this->setContactId($value['id']);
+        }
+
+        // None of the above? That's a problem!
+        throw new \Exception('Invalid value for Contact.');
+    }
+
+    /**
+     * Set Contact - Accepts a Contact model.
+     *
+     * @param $value Contact
+     * @return Submission
+     */
+    public function setContactObject(Contact $value) : Submission
+    {
+        return $this->setContactId($value->getId());
+    }
 }
