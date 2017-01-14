@@ -28,14 +28,15 @@ class FormController extends Controller
         $formId = $this->getParam('form_id', null);
         
         if (empty($formId)) {
-            return $this->error('There was a technical problem submitting the form. Please try again later.');
+
+            return $this->error('There was a technical problem submitting the form. Please try again later. (Code: FORM_I)');
         }
 
         /** @var \Octo\Forms\Model\Form $formModel */
         $formModel = Store::get('Form')->getById((int)$formId);
 
         if (empty($formModel)) {
-            return $this->error('There was a technical problem submitting the form. Please try again later.');
+            return $this->error('There was a technical problem submitting the form. Please try again later. (Code: FORM_M)');
         }
 
         // ----
@@ -57,7 +58,8 @@ class FormController extends Controller
         try {
             $this->processForm($form, $formModel, $form->getValues());
         } catch (\Exception $ex) {
-            return $this->error('There was a technical problem submitting the form. Please try again later.');
+            return $this->error($ex->getMessage());
+            return $this->error('There was a technical problem submitting the form. Please try again later. (Code: FORM_EX)');
         }
 
         // ----
@@ -123,6 +125,7 @@ class FormController extends Controller
 
         if (is_null($contact)) {
             $contact = new Contact();
+            $contact->setAddress([]);
         }
 
         if ($contact->getIsBlocked()) {
