@@ -10,10 +10,11 @@ use DateTime;
 use Block8\Database\Query;
 use Octo\Model;
 use Octo\Store;
-use Octo\Forms\Model\Submission;
+
 use Octo\Forms\Store\SubmissionStore;
-use Octo\Forms\Model\Form;
+use Octo\Forms\Model\Submission;
 use Octo\System\Model\Contact;
+use Octo\Forms\Model\Form;
 
 /**
  * Submission Base Model
@@ -38,8 +39,8 @@ abstract class SubmissionBase extends Model
         'contact_id' => 'getContactId',
         'extra' => 'getExtra',
         'message' => 'getMessage',
-        'Form' => 'getForm',
         'Contact' => 'getContact',
+        'Form' => 'getForm',
     ];
 
     protected $setters = [
@@ -49,8 +50,8 @@ abstract class SubmissionBase extends Model
         'contact_id' => 'setContactId',
         'extra' => 'setExtra',
         'message' => 'setMessage',
-        'Form' => 'setForm',
         'Contact' => 'setContact',
+        'Form' => 'setForm',
     ];
 
     /**
@@ -283,62 +284,6 @@ abstract class SubmissionBase extends Model
     
 
     /**
-     * Get the Form model for this  by Id.
-     *
-     * @uses \Octo\Forms\Store\FormStore::getById()
-     * @uses Form
-     * @return Form|null
-     */
-    public function getForm() : ?Form
-    {
-        $key = $this->getFormId();
-
-        if (empty($key)) {
-           return null;
-        }
-
-        return Form::Store()->getById($key);
-    }
-
-    /**
-     * Set Form - Accepts an ID, an array representing a Form or a Form model.
-     * @throws \Exception
-     * @param $value mixed
-     * @return Submission
-     */
-    public function setForm($value) : Submission
-    {
-        // Is this a scalar value representing the ID of this foreign key?
-        if (is_scalar($value)) {
-            return $this->setFormId($value);
-        }
-
-        // Is this an instance of Form?
-        if (is_object($value) && $value instanceof Form) {
-            return $this->setFormObject($value);
-        }
-
-        // Is this an array representing a Form item?
-        if (is_array($value) && !empty($value['id'])) {
-            return $this->setFormId($value['id']);
-        }
-
-        // None of the above? That's a problem!
-        throw new \Exception('Invalid value for Form.');
-    }
-
-    /**
-     * Set Form - Accepts a Form model.
-     *
-     * @param $value Form
-     * @return Submission
-     */
-    public function setFormObject(Form $value) : Submission
-    {
-        return $this->setFormId($value->getId());
-    }
-
-    /**
      * Get the Contact model for this  by Id.
      *
      * @uses \Octo\System\Store\ContactStore::getById()
@@ -392,5 +337,61 @@ abstract class SubmissionBase extends Model
     public function setContactObject(Contact $value) : Submission
     {
         return $this->setContactId($value->getId());
+    }
+
+    /**
+     * Get the Form model for this  by Id.
+     *
+     * @uses \Octo\Forms\Store\FormStore::getById()
+     * @uses Form
+     * @return Form|null
+     */
+    public function getForm() : ?Form
+    {
+        $key = $this->getFormId();
+
+        if (empty($key)) {
+           return null;
+        }
+
+        return Form::Store()->getById($key);
+    }
+
+    /**
+     * Set Form - Accepts an ID, an array representing a Form or a Form model.
+     * @throws \Exception
+     * @param $value mixed
+     * @return Submission
+     */
+    public function setForm($value) : Submission
+    {
+        // Is this a scalar value representing the ID of this foreign key?
+        if (is_scalar($value)) {
+            return $this->setFormId($value);
+        }
+
+        // Is this an instance of Form?
+        if (is_object($value) && $value instanceof Form) {
+            return $this->setFormObject($value);
+        }
+
+        // Is this an array representing a Form item?
+        if (is_array($value) && !empty($value['id'])) {
+            return $this->setFormId($value['id']);
+        }
+
+        // None of the above? That's a problem!
+        throw new \Exception('Invalid value for Form.');
+    }
+
+    /**
+     * Set Form - Accepts a Form model.
+     *
+     * @param $value Form
+     * @return Submission
+     */
+    public function setFormObject(Form $value) : Submission
+    {
+        return $this->setFormId($value->getId());
     }
 }
