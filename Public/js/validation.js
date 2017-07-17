@@ -15,7 +15,8 @@ if ($) {
                     var valid = true;
                     var warnings = [];
 
-                    if (thisForm.hasClass('octo-forms-form')) {
+                    if (thisForm.hasClass('octo-forms-form') && thisForm.find('input[type="file"]').length == 0) {
+                        thisForm.addClass('skip-ajax');
                         e.preventDefault();
                     }
 
@@ -81,6 +82,10 @@ if ($) {
             var $error = $form.find('.octo-form-error');
             var $success = $form.find('.octo-form-success');
             var $btn = $form.find('button[type="submit"]');
+
+            if ($form.hasClass('skip-ajax')) {
+                return;
+            }
 
             $success.hide();
             $error.hide();
